@@ -1,17 +1,17 @@
-Welcome to the SeaBIOS project!  This project implements an X86 legacy
-bios that is built with standard GNU tools.
+欢迎来到 SeaBIOS 项目！ 该项目实现了 X86 遗留
+BIOS 是用标准 GNU 工具构建的。
 
-Please see build and developer information at:
+请参阅以下位置的构建和开发人员信息：
 
-  http://seabios.org/Developer_Documentation
+   http://seabios.org/Developer_Documentation
 
-For the impatient, SeaBIOS is built for QEMU and tested on QEMU with:
+对于不耐烦的人来说，SeaBIOS 是为 QEMU 构建的，并在 QEMU 上进行了测试：
 
-  make
-  qemu -bios out/bios.bin
+   make
+   qemu -bios out/bios.bin
 
-SeaBIOS can be configured with kconfig.  To change the default
-configuration one can run "make menuconfig" prior to running "make".
+SeaBIOS 可以使用 kconfig 进行配置。 更改默认值
+配置可以在运行“make”之前运行“make menuconfig”。
 
-For other types of builds, and for more detailed developer
-documentation, please see the online documentation listed above.
+对于其他类型的构建以及更详细的开发人员
+文档，请参阅上面列出的在线文档。
