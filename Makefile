@@ -122,13 +122,13 @@ endif
 
 # Do a whole file compile by textually including all C code.
 define whole-compile
-@echo "  Compiling whole program $3"
+@echo "  编译整个程序 $3"
 $(Q)printf '$(foreach i,$2,#include "$i"\n)' > $3.tmp.c
 $(Q)$(CC) -I. $1 $(CFLAGSWHOLE) -c $3.tmp.c -o $3
 endef
 
 %.noexec.o: %.o
-	@echo "  Stripping $@"
+	@echo "  剥离 $@"
 	$(Q)$(STRIP) $< -o $<.strip.o
 	$(Q)$(PYTHON) ./scripts/ldnoexec.py $<.strip.o $@
 
@@ -137,7 +137,7 @@ $(OUT)%.s: %.c
 	$(Q)$(CC) $(CFLAGS16) -S -c $< -o $@
 
 $(OUT)%.o: %.c $(OUT)autoconf.h
-	@echo "  Compile checking $@"
+	@echo "  编译检查 $@"
 	$(Q)$(CC) $(CFLAGS32FLAT) -c $< -o $@
 
 $(OUT)%.lds: %.lds.S
@@ -150,7 +150,7 @@ $(OUT)%.lds: %.lds.S
 $(OUT)asm-offsets.s: $(OUT)autoconf.h
 
 $(OUT)asm-offsets.h: $(OUT)src/asm-offsets.s
-	@echo "  Generating offset file $@"
+	@echo "  生成偏移文件 $@"
 	$(Q)./scripts/gen-offsets.sh $< $@
 
 $(OUT)ccode16.o: $(OUT)autoconf.h $(patsubst %.c, $(OUT)src/%.o,$(SRC16)) ; $(call whole-compile, $(CFLAGS16), $(addprefix src/, $(SRC16)),$@)
@@ -160,11 +160,11 @@ $(OUT)code32seg.o: $(OUT)autoconf.h $(patsubst %.c, $(OUT)src/%.o,$(SRC32SEG)) ;
 $(OUT)ccode32flat.o: $(OUT)autoconf.h $(patsubst %.c, $(OUT)src/%.o,$(SRC32FLAT)) ; $(call whole-compile, $(CFLAGS32FLAT), $(addprefix src/, $(SRC32FLAT)),$@)
 
 $(OUT)romlayout.o: src/romlayout.S $(OUT)autoconf.h $(OUT)asm-offsets.h
-	@echo "  Compiling (16bit) $@"
+	@echo "  编译(16位) $@"
 	$(Q)$(CC) $(CFLAGS16) -c -D__ASSEMBLY__ $< -o $@
 
 $(OUT)romlayout16.lds: $(OUT)ccode32flat.o $(OUT)code32seg.o $(OUT)ccode16.o $(OUT)romlayout.o src/version.c scripts/layoutrom.py scripts/buildversion.py
-	@echo "  Building ld scripts"
+	@echo "  构建 ld 脚本"
 	$(Q)$(PYTHON) ./scripts/buildversion.py -e "$(EXTRAVERSION)" -t "$(CC);$(AS);$(LD);$(OBJCOPY);$(OBJDUMP);$(STRIP)" $(OUT)autoversion.h
 	$(Q)$(CC) $(CFLAGS32FLAT) -c src/version.c -o $(OUT)version.o
 	$(Q)$(LD) $(LD32BIT_FLAG) -r $(OUT)ccode32flat.o $(OUT)version.o -o $(OUT)code32flat.o
@@ -179,34 +179,34 @@ $(OUT)romlayout16.lds: $(OUT)ccode32flat.o $(OUT)code32seg.o $(OUT)ccode16.o $(O
 $(OUT)romlayout32seg.lds $(OUT)romlayout32flat.lds $(OUT)code32flat.o $(OUT)code16.o: $(OUT)romlayout16.lds
 
 $(OUT)rom16.o: $(OUT)code16.o $(OUT)romlayout16.lds
-	@echo "  Linking $@"
+	@echo "  连接 $@"
 	$(Q)$(LD) -T $(OUT)romlayout16.lds $< -o $@
 
 $(OUT)rom32seg.o: $(OUT)code32seg.o $(OUT)romlayout32seg.lds
-	@echo "  Linking $@"
+	@echo "  连接 $@"
 	$(Q)$(LD) -T $(OUT)romlayout32seg.lds $< -o $@
 
 $(OUT)rom.o: $(OUT)rom16.noexec.o $(OUT)rom32seg.noexec.o $(OUT)code32flat.o $(OUT)romlayout32flat.lds
-	@echo "  Linking $@"
+	@echo "  连接 $@"
 	$(Q)$(LD) -N -T $(OUT)romlayout32flat.lds $(OUT)rom16.noexec.o $(OUT)rom32seg.noexec.o $(OUT)code32flat.o -o $@
 
 $(OUT)bios.bin.prep: $(OUT)rom.o scripts/checkrom.py
-	@echo "  Prepping $@"
+	@echo "  准备 $@"
 	$(Q)rm -f $(OUT)bios.bin $(OUT)Csm16.bin $(OUT)bios.bin.elf
 	$(Q)$(OBJDUMP) -thr $< > $<.objdump
 	$(Q)$(OBJCOPY) -O binary $< $(OUT)bios.bin.raw
 	$(Q)$(PYTHON) ./scripts/checkrom.py $<.objdump $(CONFIG_ROM_SIZE) $(OUT)bios.bin.raw $(OUT)bios.bin.prep
 
 $(OUT)bios.bin: $(OUT)bios.bin.prep
-	@echo "  Creating $@"
+	@echo "  创建 $@"
 	$(Q)cp $< $@
 
 $(OUT)Csm16.bin: $(OUT)bios.bin.prep
-	@echo "  Creating $@"
+	@echo "  创建 $@"
 	$(Q)cp $< $@
 
 $(OUT)bios.bin.elf: $(OUT)rom.o $(OUT)bios.bin.prep
-	@echo "  Creating $@"
+	@echo "  创建 $@"
 	$(Q)$(STRIP) -R .comment $< -o $(OUT)bios.bin.elf
 
 
@@ -232,11 +232,11 @@ $(OUT)vgaccode16.o: $(OUT)autoconf.h $(patsubst %.c, $(OUT)%.o,$(SRCVGA)) ; $(ca
 endif
 
 $(OUT)vgaentry.o: vgasrc/vgaentry.S $(OUT)autoconf.h $(OUT)asm-offsets.h
-	@echo "  Compiling (16bit) $@"
+	@echo "  编译(16位) $@"
 	$(Q)$(CC) $(CFLAGS16) -c -D__ASSEMBLY__ $< -o $@
 
 $(OUT)vgarom.o: $(OUT)vgaccode16.o $(OUT)vgaentry.o $(OUT)vgasrc/vgalayout.lds vgasrc/vgaversion.c scripts/buildversion.py
-	@echo "  Linking $@"
+	@echo "  连接 $@"
 	$(Q)$(PYTHON) ./scripts/buildversion.py -e "$(EXTRAVERSION)" -t "$(CC);$(AS);$(LD);$(OBJCOPY);$(OBJDUMP);$(STRIP)" $(OUT)autovgaversion.h
 	$(Q)$(CC) $(CFLAGS16) -c vgasrc/vgaversion.c -o $(OUT)vgaversion.o
 	$(Q)$(LD) --gc-sections -T $(OUT)vgasrc/vgalayout.lds $(OUT)vgaccode16.o $(OUT)vgaentry.o $(OUT)vgaversion.o -o $@

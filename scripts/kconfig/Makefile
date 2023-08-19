@@ -33,7 +33,7 @@ oldconfig: $(obj)/conf
 	$< --$@ $(Kconfig)
 
 silentoldconfig: $(obj)/conf
-	@echo "  Build Kconfig config file"
+	@echo "  构建 Kconfig 配置文件"
 	$(Q)mkdir -p include/config include/generated
 	$(Q)$< --$@ $(Kconfig)
 

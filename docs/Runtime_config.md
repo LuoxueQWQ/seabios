@@ -1,193 +1,193 @@
-SeaBIOS can read several configuration items at runtime. On coreboot
-the configuration comes from files located in CBFS. When SeaBIOS runs
-natively on QEMU the files are passed from QEMU via the fw_cfg
-interface.
+SeaBIOS 可以在运行时读取多个配置项。 在核心引导上
+配置来自位于 CBFS 中的文件。 当 SeaBIOS 运行时
+在 QEMU 上，文件是通过 fw_cfg 从 QEMU 传递的
+界面。
 
-This page documents the user visible configuration and control
-features that SeaBIOS supports.
+该页面记录了用户可见的配置和控制
+SeaBIOS 支持的功能。
 
-LZMA compression
-================
+LZMA压缩
+===============
 
-On coreboot, when scanning files in CBFS, any filename that ends with
-a ".lzma" suffix will be treated as a raw file that is compressed with
-the lzma compression algorithm. This works for option ROMs,
-configuration files, floppy images, etc. . (This feature should not be
-used with embedded payloads - to compress payloads, use the standard
-section based compression algorithm that is built into the payload
-specification.)
+在 coreboot 上，扫描 CBFS 中的文件时，任何以
+“.lzma”后缀将被视为压缩后的原始文件
+lzma压缩算法。 这适用于选项 ROM，
+配置文件、软盘映像等。 （这个功能不应该
+与嵌入式有效负载一起使用 - 要压缩有效负载，请使用标准
+内置于有效负载中的基于部分的压缩算法
+规格。）
 
-For example, the file **pci1106,3344.rom.lzma** would be treated the
-same as **pci1106,3344.rom**, but will be automatically uncompressed
-when accessed.
+例如，文件 **pci1106,3344.rom.lzma** 将被视为
+与**pci1106,3344.rom**相同，但会自动解压缩
+访问时。
 
-A file is typically compressed with the lzma compression command line
-tool. For example:
+文件通常使用 lzma 压缩命令行进行压缩
+工具。 例如：
 
 `lzma -zc /path/to/somefile.bin > somefile.bin.lzma`
 
-However, some recent versions of lzma no longer supply an uncompressed
-file size in the lzma header. (They instead populate the field with
-zero.) Unfortunately, SeaBIOS requires the uncompressed file size, so
-it may be necessary to use a different version of the lzma tool.
+然而，lzma 的一些最新版本不再提供未压缩的
+lzma 标头中的文件大小。 （他们用以下内容填充该字段
+零。）不幸的是，SeaBIOS 需要未压缩的文件大小，因此
+可能需要使用不同版本的 lzma 工具。
 
-File aliases
-============
+文件别名
+===========
 
-It is possible to create the equivalent of "symbolic links" so that
-one file's content appears under another name. To do this, create a
-**links** file with one line per link and each line having the format
-of "linkname" and "destname" separated by a space character. For
-example, the **links** file may look like:
+可以创建相当于“符号链接”的内容，以便
+一个文件的内容以另一个名称出现。 为此，请创建一个
+**链接** 文件，每个链接一行，每行具有以下格式
+由空格字符分隔的“linkname”和“destname”。 为了
+例如，**links** 文件可能如下所示：
 
-```
+
 pci1234,1000.rom somerom.rom
 pci1234,1001.rom somerom.rom
 pci1234,1002.rom somerom.rom
-```
 
-The above example would cause SeaBIOS to treat "pci1234,1000.rom" or
-"pci1234,1001.rom" as files with the same content as the file
-"somerom.rom".
 
-Option ROMs
+上面的示例将导致 SeaBIOS 处理“pci1234,1000.rom”或
+“pci1234,1001.rom”为与该文件内容相同的文件
+“somerom.rom”。
+
+选项 ROM
 ===========
 
-SeaBIOS will scan all of the PCI devices in the target machine for
-option ROMs on PCI devices. It recognizes option ROMs in files that
-have the form **pciVVVV,DDDD.rom**. The VVVV,DDDD should correspond to
-the PCI vendor and device id of a device in the machine. If a given
-file is found then SeaBIOS will deploy the file instead of attempting
-to extract an option ROM from the device. In addition to supplying
-option ROMs for on-board devices that do not store their own ROMs,
-this mechanism may be used to prevent a ROM on a specific device from
-running.
+SeaBIOS 将扫描目标机器中的所有 PCI 设备
+PCI 设备上的选项 ROM。 它可以识别文件中的选项 ROM
+格式为 **pciVVVV,DDDD.rom**。 VVVV,DDDD 应对应于
+机器中设备的 PCI 供应商和设备 ID。 如果给定
+找到文件，然后 SeaBIOS 将部署该文件而不是尝试
+从设备中提取选项 ROM。 除了供应
+用于不存储自己的 ROM 的板载设备的选项 ROM，
+该机制可用于防止特定设备上的 ROM
+跑步。
 
-SeaBIOS always deploys the VGA rom associated with the active VGA
-device before any other ROMs.
+SeaBIOS 始终部署与活动 VGA 关联的 VGA ROM
+设备先于任何其他 ROM。
 
-In addition, SeaBIOS will also run any file in the directory
-**vgaroms/** as a VGA option ROM not specific to a device and files in
-**genroms/** as a generic option ROM not specific to a device. The
-ROMS in **vgaroms/** are run immediately after running the option ROM
-associated with the primary VGA device (if any were found), and the
-**genroms/** ROMs are run after all other PCI ROMs are run.
+另外，SeaBIOS还会运行该目录下的任何文件
+**vgaroms/** 作为 VGA 选项 ROM，不特定于设备和文件
+**genroms/** 作为通用选项 ROM，不特定于设备。 这
+**vgaroms/** 中的 ROMS 在运行选项 ROM 后立即运行
+与主 VGA 设备关联（如果找到的话），以及
+**genroms/** ROM 在所有其他 PCI ROM 运行之后运行。
 
-Bootsplash images
+Bootsplash 图像
 =================
 
-SeaBIOS can show a custom [JPEG](http://en.wikipedia.org/wiki/JPEG)
-image or [BMP](http://en.wikipedia.org/wiki/BMP_file_format) image
-during bootup. To enable this, add the JPEG file to flash with the
-name **bootsplash.jpg** or BMP file as **bootsplash.bmp**.
+SeaBIOS 可以显示自定义 [JPEG](http://en.wikipedia.org/wiki/JPEG)
+图像或 [BMP](http://en.wikipedia.org/wiki/BMP_file_format) 图像
+在启动期间。 要启用此功能，请使用以下命令将 JPEG 文件添加到闪存
+将 **bootsplash.jpg** 或 BMP 文件命名为 **bootsplash.bmp**。
 
-The size of the image determines the video mode to use for showing the
-image. Make sure the dimensions of the image exactly correspond to an
-available video mode (eg, 640x480, or 1024x768), otherwise it will not
-be displayed.
+图像的大小决定了用于显示图像的视频模式
+图像。 确保图像的尺寸完全对应于
+可用的视频模式（例如，640x480或1024x768），否则不会
+被显示。
 
-SeaBIOS will show the image during the wait for the boot menu (if the
-boot menu has been disabled, users will not see the image). The image
-should probably have "Press ESC for boot menu" embedded in it so users
-know they can enter the normal SeaBIOS boot menu. By default, the boot
-menu prompt (and thus graphical image) is shown for 2.5 seconds. This
-can be customized via a [configuration
-parameter](#Other_Configuration_items).
+SeaBIOS 将在等待启动菜单期间显示图像（如果
+启动菜单已被禁用，用户将看不到该图像）。 图片
+可能应该嵌入“按 ESC 启动菜单”，以便用户
+知道可以进入正常的SeaBIOS启动菜单。 默认情况下，启动
+菜单提示（以及图形图像）显示 2.5 秒。 这
+可以通过[配置
+参数](#Other_Configuration_items)。
 
-The JPEG viewer in SeaBIOS uses a simplified decoding algorithm. It
-supports most common JPEGs, but does not support all possible formats.
-Please see the [trouble reporting section](Debugging) if a valid image
-isn't displayed properly.
+SeaBIOS 中的 JPEG 查看器使用简化的解码算法。 它
+支持最常见的 JPEG，但不支持所有可能的格式。
+如果图像有效，请参阅[问题报告部分]（调试）
+未正确显示。
 
-Payloads
+有效载荷
 ========
 
-On coreboot, SeaBIOS will treat all files found in the **img/**
-directory as a coreboot payload. Each payload file will be available
-for boot, and one can select from the available payloads in the
-bootmenu. SeaBIOS supports both uncompressed and lzma compressed
-payloads.
+在 coreboot 上，SeaBIOS 将处理 **img/** 中找到的所有文件
+目录作为 coreboot 有效负载。 每个有效负载文件都可用
+用于启动，并且可以从可用的有效负载中进行选择
+引导菜单。 SeaBIOS 支持未压缩和 lzma 压缩
+有效负载。
 
-Floppy images
+软盘映像
 =============
 
-It is possible to embed an image of a floppy into a file. SeaBIOS can
-then boot from and redirect floppy BIOS calls to the image. This is
-mainly useful for legacy software (such as DOS utilities). To use this
-feature, place a floppy image into the directory **floppyimg/**.
+可以将软盘映像嵌入到文件中。 SeaBIOS 可以
+然后从该映像启动并将软盘 BIOS 调用重定向到该映像。 这是
+主要对遗留软件（例如 DOS 实用程序）有用。 要使用这个
+功能，将软盘映像放入目录**floppyimg/**。
 
-Using LZMA file compression with the [.lzma file
-suffix](#LZMA_compression) is a useful way to reduce the file
-size. Several floppy formats are available: 360K, 1.2MB, 720K, 1.44MB,
-2.88MB, 160K, 180K, 320K.
+将 LZMA 文件压缩与 [.lzma 文件
+suffix](#LZMA_compression) 是减少文件的有用方法
+尺寸。 有多种软盘格式可供选择：360K、1.2MB、720K、1.44MB、
+2.88MB、160K、180K、320K。
 
-The floppy image will appear as writable to the system, however all
-writes are discarded on reboot.
+软盘映像将显示为对系统可写，但是所有
+重新启动时写入将被丢弃。
 
-When using this system, SeaBIOS reserves high-memory to store the
-floppy. The reserved memory is then no longer available for OS use, so
-this feature should only be used when needed.
+使用该系统时，SeaBIOS 保留高内存来存储
+软盘。 保留的内存将不再可供操作系统使用，因此
+仅应在需要时使用此功能。
 
-Configuring boot order
-======================
+配置启动顺序
+=====================
 
-The **bootorder** file may be used to configure the boot up order. The
-file should be ASCII text and contain one line per boot method. The
-description of each boot method follows an [Open
-Firmware](https://secure.wikimedia.org/wikipedia/en/wiki/Open_firmware)
-device path format. SeaBIOS will attempt to boot from each item in the
-file - first line of the file first.
+**bootorder** 文件可用于配置启动顺序。 这
+文件应该是 ASCII 文本，并且每种引导方法包含一行。 这
+每种启动方法的描述遵循 [Open
+固件](https://secure.wikimedia.org/wikipedia/en/wiki/Open_firmware)
+设备路径格式。 SeaBIOS 将尝试从
+文件 - 首先是文件的第一行。
 
-The easiest way to find the available boot methods is to look for
-"Searching bootorder for" in the SeaBIOS debug output. For example,
-one may see lines similar to:
+查找可用引导方法的最简单方法是查找
+SeaBIOS 调试输出中的“搜索引导顺序”。 例如，
+人们可能会看到类似以下内容的行：
 
-```
-Searching bootorder for: /pci@i0cf8/*@f/drive@1/disk@0
-Searching bootorder for: /pci@i0cf8/*@f,1/drive@2/disk@1
-Searching bootorder for: /pci@i0cf8/usb@10,4/*@2
-```
+````
+搜索引导顺序：/pci@i0cf8/*@f/drive@1/disk@0
+搜索引导顺序：/pci@i0cf8/*@f,1/drive@2/disk@1
+搜索引导顺序：/pci@i0cf8/usb@10,4/*@2
+````
 
-The above represents the patterns SeaBIOS will search for in the
-bootorder file. However, it's safe to just copy and paste the pattern
-into bootorder. For example, the file:
+上面表示 SeaBIOS 将在
+引导命令文件。 但是，复制并粘贴模式是安全的
+进入启动顺序。 例如，文件：
 
-```
+````
 /pci@i0cf8/usb@10,4/*@2
 /pci@i0cf8/*@f/drive@1/disk@0
-```
+````
 
-will instruct SeaBIOS to attempt to boot from the given USB drive
-first and then attempt the given ATA harddrive second.
+将指示 SeaBIOS 尝试从给定的 USB 驱动器启动
+首先，然后尝试指定的 ATA 硬盘。
 
-SeaBIOS also supports a special "HALT" directive. If a line that
-contains "HALT" is found in the bootorder file then SeaBIOS will (by
-default) only attempt to boot from devices explicitly listed above
-HALT in the file.
+SeaBIOS 还支持特殊的“HALT”指令。 如果一条线
+在引导程序文件中找到包含“HALT”的 SeaBIOS 将（通过
+默认）仅尝试从上面明确列出的设备启动
+在文件中暂停。
 
-Other Configuration items
+其他配置项
 =========================
 
-There are several additional configuration options available in the
-**etc/** directory.
+有几个额外的配置选项可用
+**etc/** 目录。
 
-| Filename            | Description
-|---------------------|---------------------------------------------------
-| show-boot-menu      | Controls the display of the boot menu. Valid values are 0: Disable the boot menu, 1: Display boot menu unconditionally, 2: Skip boot menu if only one device is present. The default is 1.
-| boot-menu-message   | Customize the text boot menu message. Normally, when in text mode SeaBIOS will report the string "\\nPress ESC for boot menu.\\n\\n". This field allows the string to be changed. (This is a string field, and is added as a file containing the raw string.)
-| boot-menu-key       | Controls which key activates the boot menu. The value stored is the DOS scan code (eg, 0x86 for F12, 0x01 for Esc). If this field is set, be sure to also customize the **boot-menu-message** field above.
-| boot-menu-wait      | Amount of time (in milliseconds) to wait at the boot menu prompt before selecting the default boot.
-| boot-fail-wait      | If no boot devices are found SeaBIOS will reboot after 60 seconds. Set this to the amount of time (in milliseconds) to customize the reboot delay or set to -1 to disable rebooting when no boot devices are found
-| extra-pci-roots     | If the target machine has multiple independent root buses set this to a positive value. The SeaBIOS PCI probe will then search for the given number of extra root buses.
-| ps2-keyboard-spinup | Some laptops that emulate PS2 keyboards don't respond to keyboard commands immediately after powering on. One may specify the amount of time (in milliseconds) here to allow as additional time for the keyboard to become responsive. When this field is set, SeaBIOS will repeatedly attempt to detect the keyboard until the keyboard is found or the specified timeout is reached.
-| optionroms-checksum | Option ROMs are required to have correct checksums. However, some option ROMs in the wild don't correctly follow the specifications and have bad checksums. Set this to a zero value to allow SeaBIOS to execute them anyways.
-| pci-optionrom-exec  | Controls option ROM execution for roms found on PCI devices (as opposed to roms found in CBFS/fw_cfg).  Valid values are 0: Execute no ROMs, 1: Execute only VGA ROMs, 2: Execute all ROMs. The default is 2 (execute all ROMs).
-| s3-resume-vga-init  | Set this to a non-zero value to instruct SeaBIOS to run the vga rom on an S3 resume.
-| screen-and-debug    | Set this to a zero value to instruct SeaBIOS to not write characters it sends to the screen to the debug ports. This can be useful when using sgabios.
-| advertise-serial-debug-port | If using a serial debug port, one can set this file to a zero value to prevent SeaBIOS from listing that serial port as available for operating system use. This can be useful when running old DOS programs that are known to reset the baud rate of all advertised serial ports.
-| sercon-port         | Set this to the IO address of a serial port to enable SeaBIOS' VGA adapter emulation on the given serial port.
-| floppy0             | Set this to the type of the first floppy drive in the system (only type 4 for 3.5 inch drives is supported).
-| floppy1             | The type of the second floppy drive in the system. See the description of **floppy0** for more info.
-| threads             | By default, SeaBIOS will parallelize hardware initialization during bootup to reduce boot time. Multiple hardware devices can be initialized in parallel between vga initialization and option rom initialization. One can set this file to a value of zero to force hardware initialization to run serially. Alternatively, one can set this file to 2 to enable early hardware initialization that runs in parallel with vga, option rom initialization, and the boot menu.
-| sdcard*             | One may create one or more files with an "sdcard" prefix (eg, "etc/sdcard0") with the physical memory address of an SDHCI controller (one memory address per file).  This may be useful for SDHCI controllers that do not appear as PCI devices, but are mapped to a consistent memory address. If this option is used then SeaBIOS will not scan for PCI SHDCI controllers.
-| usb-time-sigatt     | The USB2 specification requires devices to signal that they are attached within 100ms of the USB port being powered on. Some USB devices are known to require more time. Prior to receiving an attachment signal there is no way to know if a USB port is empty or if it has a device attached. One may specify an amount of time here (in milliseconds, default 100) to wait for a USB device attachment signal. Increasing this value will also increase the overall machine bootup time.
+| 文件名 | 描述
+|--------------------------------|---------------------------------------- ------------------------
+| 显示启动菜单 | 控制启动菜单的显示。 有效值为 0：禁用启动菜单，1：无条件显示启动菜单，2：如果仅存在一个设备，则跳过启动菜单。 默认值为 1。
+| 启动菜单消息 | 自定义文本启动菜单消息。 通常，在文本模式下 SeaBIOS 将报告字符串“\\nPress ESC for boot menu.\\n\\n”。 该字段允许更改字符串。 （这是一个字符串字段，并作为包含原始字符串的文件添加。）
+| 启动菜单键 | 控制哪个键激活启动菜单。 存储的值是 DOS 扫描代码（例如，F12 为 0x86，Esc 为 0x01）。 如果设置了此字段，请确保还自定义上面的 **boot-menu-message** 字段。
+| 启动菜单等待 | 选择默认启动之前在启动菜单提示处等待的时间（以毫秒为单位）。
+| 启动失败等待| 如果未找到启动设备，SeaBIOS 将在 60 秒后重新启动。 将此设置为时间量（以毫秒为单位）以自定义重新启动延迟，或设置为 -1 以在找不到启动设备时禁用重新启动
+| 额外的 PCI 根 | 如果目标机器有多个独立的根总线，请将其设置为正值。 SeaBIOS PCI 探针随后将搜索给定数量的额外根总线。
+| ps2-键盘-spinup | 一些模拟 PS2 键盘的笔记本电脑在开机后不会立即响应键盘命令。 人们可以在此处指定时间量（以毫秒为单位），以允许键盘有额外的时间进行响应。 设置此字段后，SeaBIOS 将重复尝试检测键盘，直到找到键盘或达到指定的超时时间。
+| optionroms-校验和 | 选项 ROM 需要具有正确的校验和。 然而，一些选项 ROM 未正确遵循规范并且校验和错误。 将其设置为零值以允许 SeaBIOS 无论如何执行它们。
+| pci-optionrom-执行 | 控制 PCI 设备上找到的 ROM 的选项 ROM 执行（与 CBFS/fw_cfg 中找到的 ROM 相对）。 有效值为 0：不执行 ROM，1：仅执行 VGA ROM，2：执行所有 ROM。 默认值为 2（执行所有 ROM）。
+| s3-resume-vga-init | s3-resume-vga-init | 将其设置为非零值以指示 SeaBIOS 在 S3 恢复上运行 vga rom。
+| 屏幕和调试| 将其设置为零值可指示 SeaBIOS 不将其发送到屏幕的字符写入调试端口。 这在使用 sgabios 时很有用。
+| 广告串行调试端口 | 如果使用串行调试端口，可以将此文件设置为零值，以防止 SeaBIOS 将该串行端口列为可供操作系统使用。 当运行已知会重置所有公布的串行端口的波特率的旧 DOS 程序时，这可能很有用。
+| Sercon 端口 | 将其设置为串行端口的 IO 地址，以在给定串行端口上启用 SeaBIOS 的 VGA 适配器模拟。
+| 软盘0 | 将其设置为系统中第一个软盘驱动器的类型（仅支持 3.5 英寸驱动器的类型 4）。
+| 软盘1 | 系统中第二个软盘驱动器的类型。 参见**flo的描述ppy0** 了解更多信息。
+| 线程 | 默认情况下，SeaBIOS 将在启动期间并行硬件初始化以减少启动时间。 可以在 vga 初始化和 option rom 初始化之间并行初始化多个硬件设备。 可以将此文件设置为零值，以强制硬件初始化串行运行。 或者，可以将此文件设置为 2，以启用与 vga、选项 ROM 初始化和启动菜单并行运行的早期硬件初始化。
+| SD 卡* | 人们可以使用SDHCI控制器的物理内存地址（每个文件一个内存地址）创建一个或多个带有“sdcard”前缀（例如“etc/sdcard0”）的文件。 这对于不显示为 PCI 设备但映射到一致内存地址的 SDHCI 控制器可能很有用。 如果使用此选项，SeaBIOS 将不会扫描 PCI SHDCI 控制器。
+| USB 时间 sigatt | USB2 规范要求设备在 USB 端口通电后 100 毫秒内发出已连接信号。 已知某些 USB 设备需要更多时间。 在接收连接信号之前，无法知道 USB 端口是否为空或者是否已连接设备。 可以在此处指定等待 USB 设备连接信号的时间量（以毫秒为单位，默认为 100）。 增加该值也会增加机器的整体启动时间。

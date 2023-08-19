@@ -1,160 +1,63 @@
-This page describes the process that the SeaBIOS build uses to link
-the compiled code into the final binary objects.
+可能更合适
+描述为[协程](http://en.wikipedia.org/wiki/Coroutine)。
+这些“线程”不会在多个CPU上运行并且不会被抢占，因此
+不需要原子内存访问和复杂的锁定。
 
-Unfortunately, the SeaBIOS linking phase is complex. This complexity
-is due to several unusual requirements:
+这些线程的目标是将总体启动时间减少
+并行化硬件延迟。 （例如，通过允许等待
+一个 ATA 硬盘驱动器旋转并响应命令
+与等待 PS/2 键盘响应设置并行
+命令。）这些硬件设置线程仅在
+[POST 阶段](#POST_phase) 的“设置”子阶段。
 
-* Some BIOS entry points must reside at specific hardcoded memory
-  locations. The build must support positioning code and variables at
-  specific locations.
-* In order to support multiple [memory models](Memory Model) the same
-  C code can be complied in three modes (16bit mode, 32bit segmented
-  mode, and 32bit "flat" mode). Binary code from these three modes
-  must be able to co-exist and on occasion reference each other.
-* There is a finite amount of memory available to the BIOS. The build
-  will attempt to weed out unused code and variables from the final
-  binary. It also supports self-relocation of one-time initialization
-  code.
+实现线程的代码在stacks.c中。
 
-Code layout
-===========
-
-To support the unusual build requirements, several
-[gcc](http://en.wikipedia.org/wiki/GNU_Compiler_Collection) compiler
-options are used. The "-ffunction-sections" and "-fdata-sections"
-flags instruct the compiler to place each variable and function into
-its own
-[ELF](http://en.wikipedia.org/wiki/Executable_and_Linkable_Format)
-section.
-
-The C code is compiled three times into three separate objects for
-each of the major supported [memory models](Memory Model):
-**code16.o**, **code32seg.o**, and **code32flat.o**. Information on
-the sections and symbols of these three objects are extracted (using
-**objdump**) and passed in to the **scripts/layoutrom.py** python
-script. This script analyzes this information and produces gnu
-[ld](http://en.wikipedia.org/wiki/GNU_linker) "linker scripts" which
-provide precise location information to the linker. These linker
-scripts are then used during the link phase which produces a **rom.o**
-object containing all the code.
-
-Fixed location entry points
----------------------------
-
-The build supports placing code entry points and variables at fixed
-memory locations. This support is required in order to support the
-legacy BIOS standards. For example, a program might execute an "int
-0x15" to request system information from the BIOS, but another old
-program might use "ljmpw $0xf000, $0xf859" instead. Both must provide
-the same results and so the build must position the 0x15 interrupt
-entry point in physical memory at 0xff859.
-
-This support is accomplished by placing the given code/variables into
-ELF sections that have a name containing the substring
-".fixedaddr.0x1234" (where 0x1234 is the desired address). For
-variables in C code this is accomplished by marking the variables with
-the VARFSEGFIXED(0x1234) macro. For assembler entry points the ORG
-macro is used (see **romlayout.S**).
-
-During the build, the **layoutrom.py** script will detect sections
-that contain the ".fixedaddr." substring and will arrange for the
-final linker scripts to specify the desired address for the given
-section.
-
-Due to the sparse nature of these fixed address sections, the
-layoutrom.py script will also arrange to pack in other unrelated 16bit
-code into the free space between fixed address sections (see
-layoutrom.py:fitSections()). This maximizes the space available and
-reduces the overall size of the final binary.
-
-C code in three modes
----------------------
-
-SeaBIOS must support multiple [memory models](Memory Model). This is
-accomplished by compiling the C code three separate times into three
-separate objects.
-
-The C code within a mode must not accidentally call a C function in
-another mode, but multiple modes must all access the same single copy
-of global variables. Further, it is occasionally necessary for the C
-code in one mode to obtain the address of C code in another mode.
-
-In order to use the same global variables between all modes, the
-layoutrom.py script will detect references to global variables and
-emit specific symbol definitions for those global variables in the
-linker scripts so that all references use the same physical memory
-address (see layoutrom.py:outXRefs()).
-
-To ensure C code does not accidentally call C code compiled in a
-different mode, the build will ensure the symbols for C code in each
-mode are isolated from each other during the linking stage. To support
-those situations where an address of a C function in another mode is
-required the build supports symbols with a special "\_cfuncX_"
-prefix. The layoutrom.py script detects these references and will emit
-a corresponding symbol definitions in the linker script that points to
-the C code of the specified mode. The call32() and stack_hop_back()
-macros automatically add the required prefix for C code, but the
-prefixes need to be explicitly added in assembler code.
-
-Build garbage collection
-------------------------
-
-To reduce the overall size of the final SeaBIOS binary the build
-supports automatically weeding out of unused code and variables. This
-is done with two separate processes: when supported the gcc
-"-fwhole-program" compilation flag is used, and the layoutrom.py
-script checks for unreferenced ELF sections. The layoutrom.py script
-builds the final linker scripts with only referenced ELF sections, and
-thus unreferenced sections are weeded out from the final objects.
-
-When writing C code, it is necessary to mark C functions with the
-VISIBLE16, VISIBLE32SEG, or VISIBLE32FLAT macros if the functions are
-ever referenced from assembler code. These macros ensure the
-corresponding C function is emitted by the C compiler when compiling
-for the given memory mode. These macros, however, do not affect the
-layoutrom.py reference check, so even a function decorated with one of
-the above macros can be weeded out from the final object if it is
-never referenced.
-
-Code relocation
----------------
-
-To further reduce the runtime memory size of the BIOS, the build
-supports runtime self-relocation. Normally SeaBIOS is loaded into
-memory in the memory region at 0xC0000-0x100000. This is convenient
-for initial binary deployment, but the space competes with memory
-requirements for Option ROMs, BIOS tables, and runtime storage. By
-default, SeaBIOS will self-relocate its one-time initialization code
-to free up space in this region.
-
-To support this feature, the build attempts to automatically detect
-which C code is exclusively initialization phase code (see
-layoutrom.py:checkRuntime()). It does this by finding all functions
-decorated with the VISIBLE32INIT macro and all functions only
-reachable via functions with that macro. These "init only" functions
-are then grouped together and their location and size is stored in the
-binary for the runtime code to relocate (see post.c:reloc_preinit()).
-
-The build also locates all cross section code references along with
-all absolute memory addresses in the "init only" code. These addresses
-need to be modified with the new run-time address in order for the
-code to successfully run at a new address. The build finds the
-location of the addresses (see layoutrom.py:getRelocs()) and stores
-the information in the final binary.
-
-Final binary checks
+硬件中断
 ===================
 
-At the conclusion of the main linking stage, the code is contained in
-the file **rom.o**. This object file contains all of the assembler
-code, variables, and the C code from all three memory model modes.
+SeaBIOS C 代码始终在禁用硬件中断的情况下运行。 全部
+C 代码入口点（参见 romlayout.S）要小心地显式地
+禁用硬件中断（通过“cli”）。 因为跑步与
+禁用中断会增加中断延迟，任何可能的 C 代码
+循环相当长的时间（超过约 1 毫秒）应该
+定期调用yield()。 Yield() 调用将短暂启用
+发生硬件中断，然后禁用中断，然后恢复
+C代码的执行。
 
-At this point the **scripts/checkrom.py** script is run to perform
-final checks on the code. The script performs some sanity checks, it
-may update some tables in the binary, and it reports some size
-information.
+SeaBIOS 总是运行 C 代码有两个主要原因
+中断被禁用。 第一个原因是外部软件可能
+覆盖在硬件上调用的默认 SeaBIOS 处理程序
+中断事件。 事实上，基于 DOS 的应用程序这样做很常见
+这。 这些传统的第三方中断处理程序可能有
+未记录的期望（例如堆栈位置和堆栈大小）和
+可能会尝试回调各种 SeaBIOS 软件服务。
+可以通过以下方式实现更高的兼容性和更可重复的结果
+只允许在特定点发生硬件中断（通过yield()
+来电）。 第二个原因是 SeaBIOS 的大部分运行在 32 位模式下。
+尝试在 16 位模式和 32 位模式下处理中断
+不需要在模式之间切换来委托这些中断
+复杂。 虽然禁用中断可以增加中断
+延迟，这只会影响遗留系统，其中的小幅增加
+中断延迟不太可能被注意到。
 
-After the checkrom.py script is run the final user visible binary is
-produced. The name of the final binary is either **bios.bin**,
-**Csm16.bin**, or **bios.bin.elf** depending on the SeaBIOS build
-requested.
+额外的16位堆栈
+=================
+
+SeaBIOS 为两种硬件实现 16 位实模式处理程序
+中断和软件请求“中断”。 在传统的 BIOS 中，
+这些请求将使用调用者的堆栈空间。 但是，那
+调用者必须提供的最小空间尚未确定
+标准化和非常古老的 DOS 程序已被观察到分配
+非常少量的堆栈空间（100 字节或更少）。
+
+默认情况下，SeaBIOS 现在在大多数 16 位实机上切换到自己的堆栈
+模式入口点。 这个额外的堆栈空间分配在[“low
+内存”]（内存模型）。它确保 SeaBIOS 使用最少量的内存
+这些遗留的调用者堆栈（通常不超过 16 个字节）
+来电。 （最近定义的 BIOS 接口，例如
+支持16位保护和32位保护模式调用标准化
+具有足够空间的最小堆栈大小，而 SeaBIOS 一般不会
+在这些情况下使用其额外的堆栈。）
+
+实现此堆栈“跳跃”的代码位于 romlayout.S 和
+stacks.c。

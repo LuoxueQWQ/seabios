@@ -1,253 +1,252 @@
-The SeaBIOS code is required to support multiple x86 CPU memory
-models. This requirement impacts the code layout and internal storage
-of SeaBIOS.
+SeaBIOS 代码需要支持多个 x86 CPU 内存
+楷模。 此要求会影响代码布局和内部存储
+SeaBIOS 的。
 
-x86 Memory Models
+x86 内存型号
 =================
 
-The x86 line of CPUs has evolved over many years. The original 8086
-chip used 16bit pointers and could only address 1 megabyte of memory.
-The 80286 CPU still used 16bit pointers, but could address up to 16
-megabytes of memory. The 80386 chips could process 32bit instructions
-and could access up to 4 gigabyte of memory. The most recent x86 chips
-can process 64bit instructions and access 16 exabytes of ram.
+x86 CPU 系列已经发展了很多年。 原来的8086
+芯片使用16位指针，只能寻址1兆字节的内存。
+80286 CPU 仍然使用 16 位指针，但最多可以寻址 16 个
+兆字节内存。 80386芯片可以处理32位指令
+并且可以访问高达 4 GB 的内存。 最新的 x86 芯片
+可以处理 64 位指令并访问 16 艾字节 RAM。
 
-During the evolution of the x86 CPUs from the 8086 to the 80386 the
-BIOS was extended to handle calls in the various modes that the CPU
-implemented.
+在 x86 CPU 从 8086 到 80386 的演变过程中
+BIOS 进行了扩展，可以处理 CPU 所支持的各种模式下的调用
+实施的。
 
-This section outlines the five different x86 CPU execution and memory
-access models that SeaBIOS supports.
+本节概述了五种不同的 x86 CPU 执行和内存
+SeaBIOS 支持的访问模型。
 
-16bit real mode
----------------
+16位实模式
+----------------
 
-This mode is a
-[segmented](http://en.wikipedia.org/wiki/Memory_segmentation) memory
-mode invoked by callers. The CPU defaults to executing 16bit
-instructions. Callers typically invoke the BIOS by issuing an "int x"
-instruction which causes a software
-[interrupt](http://en.wikipedia.org/wiki/Interrupt) that is handled by
-the BIOS. The SeaBIOS code also handles hardware interrupts in this
-mode. SeaBIOS can only access the first 1 megabyte of memory in this
-mode, but it can access any part of that first megabyte.
+该模式是一个
+[分段](http://en.wikipedia.org/wiki/Memory_segmentation) 内存
+由调用者调用的模式。 CPU默认执行16bit
+指示。 调用者通常通过发出“int x”来调用 BIOS
+导致软件的指令
+[中断](http://en.wikipedia.org/wiki/Interrupt) 由
+BIOS。 SeaBIOS 代码还处理硬件中断
+模式。 SeaBIOS 只能访问此中的前 1 MB 内存
+模式，但它可以访问第一个兆字节的任何部分。
 
-16bit bigreal mode
+16位大实数模式
 ------------------
 
-This mode is a segmented memory mode that is used for [option
-roms](http://en.wikipedia.org/wiki/Option_ROM). The CPU defaults to
-executing 16bit instructions and segmented memory accesses are still
-used. However, the segment limits are increased so that the entire
-first 4 gigabytes of memory is fully accessible. Callers can invoke
-all the [16bit real mode](#16bit_real_mode) functions while in this
-mode and can also invoke the Post Memory Manager (PMM) functions that
-are available during option rom execution.
+该模式是分段内存模式，用于[选项
+ROM](http://en.wikipedia.org/wiki/Option_ROM)。 CPU默认为
+执行16位指令和分段内存访问仍然
+用过的。 然而，段限制增加，使得整个
+前 4 GB 内存是完全可访问的。 调用者可以调用
+所有[16位实模式](#16bit_real_mode)功能在此
+模式，还可以调用后内存管理器 (PMM) 函数
+在选项 ROM 执行期间可用。
 
-16bit protected mode
+16位保护模式
 --------------------
 
-CPU execution in this mode is similar to [16bit real
-mode](#16bit_real_mode). The CPU defaults to executing 16bit
-instructions. However, each segment register indexes a "descriptor
-table", and it is difficult or impossible to know what the physical
-address of each segment is. Generally speaking, the BIOS can only
-access code and data in the f-segment. The PCIBIOS, APM BIOS, and PNP
-BIOS all have documented 16bit protected mode entry points.
+该模式下的CPU执行类似于[16bit real
+模式](#16bit_real_mode)。 CPU默认执行16bit
+指示。 然而，每个段寄存器索引一个“描述符
+表”，并且很难或不可能知道物理内容是什么
+每个段的地址是。 一般来说，BIOS只能
+访问 f 段中的代码和数据。 PCIBIOS、APM BIOS 和 PNP
+BIOS 都记录了 16 位保护模式入口点。
 
-Some old code may attempt to invoke the standard [16bit real
-mode](#16bit_real_mode) entry points while in 16bit protected
-mode. The PCI BIOS specification explicitly requires that the legacy
-"int 1a" real mode entry point support 16bit protected mode calls if
-they are for the PCI BIOS. Callers of other legacy entry points in
-protected mode have not been observed and SeaBIOS does not support
-them.
+一些旧代码可能会尝试调用标准[16位实数
+mode](#16bit_real_mode) 处于 16 位保护状态下的入口点
+模式。 PCI BIOS 规范明确要求传统
+“int 1a”实模式入口点支持 16 位保护模式调用，如果
+它们用于 PCI BIOS。 其他遗留入口点的调用者
+尚未观察到保护模式并且 SeaBIOS 不支持
+他们。
 
-32bit segmented mode
+32位分段模式
 --------------------
 
-In this mode the processor runs in 32bit mode, but the segment
-registers may have a limit and may have a non-zero offset. In effect,
-this mode has all of the limitations of [16bit protected
-mode](#16bit_protected_mode) - the main difference between the modes
-is that the processor defaults to executing 32bit instructions. In
-addition to these limitations, callers may also run the SeaBIOS code
-at varying virtual addresses and so the code must support code
-relocation. The PCI BIOS specification and APM BIOS specification
-define 32bit segmented mode interfaces.
+在此模式下，处理器以 32 位模式运行，但段
+寄存器可能有限制并且可能有非零偏移。 有效，
+此模式具有 [16 位保护
+mode](#16bit_protected_mode) - 模式之间的主要区别
+是处理器默认执行32位指令。 在
+除了这些限制之外，调用者还可以运行 SeaBIOS 代码
+在不同的虚拟地址，因此代码必须支持代码
+搬迁。 PCI BIOS 规范和 APM BIOS 规范
+定义 32 位分段模式接口。
 
-32bit flat mode
----------------
+32位平面模式
+----------------
 
-In this mode the processor defaults to executing 32bit instructions,
-and all segment registers have an offset of zero and allow access to
-the entire first 4 gigabytes of memory. This is the only "sane" mode
-for 32bit code - modern compilers and modern operating systems will
-generally only support this mode (when running 32bit code).
-Ironically, it's the only mode that is not strictly required for a
-BIOS to support. SeaBIOS uses this mode internally to support the POST
-and BOOT [phases of execution](Execution and code flow).
+在此模式下处理器默认执行 32 位指令，
+所有段寄存器的偏移量为零并允许访问
+整个前 4 GB 内存。 这是唯一的“理智”模式
+对于 32 位代码 - 现代编译器和现代操作系统将
+一般只支持这种模式（运行32位代码时）。
+讽刺的是，这是唯一一个不严格要求的模式。
+BIOS支持。 SeaBIOS 在内部使用此模式来支持 POST
+和 BOOT [执行阶段]（执行和代码流）。
 
-code16gcc
+代码16GCC
 =========
 
-In order to produce code that can run when the processor is in a 16bit
-mode, SeaBIOS uses the
-[binutils](http://en.wikipedia.org/wiki/GNU_Binutils) ".code16gcc"
-assembler flag. This instructs the assembler to emit extra prefix
-opcodes so that the 32bit code produced by
-[gcc](http://en.wikipedia.org/wiki/GNU_Compiler_Collection) will run
-even when the processor is in 16bit mode. Note that gcc always
-produces 32bit code - it does not know about the ".code16gcc" flag and
-does not know that the code will run in a 16bit mode.
+为了生成可以在处理器为 16 位时运行的代码
+模式下，SeaBIOS 使用
+[binutils](http://en.wikipedia.org/wiki/GNU_Binutils)“.code16gcc”
+汇编器标志。 这指示汇编器发出额外的前缀
+操作码，以便产生的 32 位代码
+[gcc](http://en.wikipedia.org/wiki/GNU_Compiler_Collection) 将运行
+即使处理器处于 16 位模式。 请注意，gcc 始终
+生成 32 位代码 - 它不知道“.code16gcc”标志并且
+不知道代码是否会在 16 位模式下运行。
 
-SeaBIOS uses the same code for all of the 16bit modes ([16bit real
-mode](#16bit_real_mode), [16bit bigreal mode](#16bit_bigreal_mode),
-and [16bit protected mode](#16bit_protected_mode)) and that code is
-assembled using ".code16gcc". SeaBIOS is careful to use segment
-registers properly so that the same code can run in the different
-16bit modes that it needs to support.
+SeaBIOS 对所有 16 位模式使用相同的代码（[16 位实数
+模式](#16bit_real_mode), [16bit bigreal 模式](#16bit_bigreal_mode),
+和[16位保护模式](#16bit_protected_mode))，代码是
+使用“.code16gcc”组装。 SeaBIOS谨慎使用段
+正确注册，以便相同的代码可以在不同的环境中运行
+它需要支持的16位模式。
 
-C code mode flags
+C 代码模式标志
 =================
 
-Two compile time flags are available to determine the memory model the
-code is intended for: MODE16 and MODESEGMENT. When compiling for the
-16 bit modes, MODE16 is true and MODESEGMENT is true. In 32bit
-segmented mode, MODE16 is false and MODESEGMENT is true. In 32bit flat
-mode both MODE16 and MODESEGMENT are false.
+两个编译时标志可以用来确定内存模型
+代码适用于：MODE16 和 MODESEGMENT。 当编译为
+16 位模式，MODE16 为真，MODESEGMENT 为真。 32 位
+分段模式，MODE16 为 false，MODESEGMENT 为 true。 在 32 位平面中
+模式 MODE16 和 MODESEGMENT 均为 false。
 
-Common memory used at run-time
-==============================
+运行时使用的公共内存
+================================
 
-There are several memory areas that the SeaBIOS "runtime"
-[phase](Execution and code flow) makes use of:
+SeaBIOS“运行时”有几个内存区域
+[阶段]（执行和代码流）利用：
 
-* 0x000000-0x000400: Interrupt descriptor table (IDT). This area
-  defines 256 interrupt vectors as defined by the Intel CPU
-  specification for 16bit irq handlers. This area is read/writable at
-  runtime and can be accessed from 16bit real mode and 16bit bigreal
-  mode calls. SeaBIOS only uses this area to maintain compatibility
-  with legacy systems.
+* 0x000000-0x000400：中断描述符表（IDT）。 这片区域
+   定义了 Intel CPU 定义的 256 个中断向量
+   16 位中断处理程序规范。 该区域可读/写
+   运行时并且可以从 16 位实模式和 16 位 bigreal 访问
+   模式调用。 SeaBIOS 仅使用此区域来保持兼容性
+   与遗留系统。
 
-* 0x000400-0x000500: BIOS Data Area (BDA). This area contains various
-  legacy flags and attributes. The area is read/writable at runtime
-  and can be accessed from 16bit real mode and 16bit bigreal mode
-  calls. SeaBIOS only uses this area to maintain compatibility with
-  legacy systems.
+* 0x000400-0x000500：BIOS 数据区 (BDA)。 该区域包含各种
+   遗留标志和属性。 该区域在运行时可读/写
+   并且可以从16位实模式和16位大实模式访问
+   来电。 SeaBIOS 仅使用此区域来保持与
+   遗留系统。
 
-* 0x09FC00-0x0A0000 (typical): Extended BIOS Data Area (EBDA). This
-  area contains a few legacy flags and attributes. The area is
-  typically located at 0x9FC00, but it can be moved by option roms, by
-  legacy operating systems, and by SeaBIOS if
-  CONFIG_MALLOC_UPPERMEMORY is not set. Its actual location is
-  determined by a pointer in the BDA. The area is read/writable at
-  runtime and can be accessed from 16bit real mode and 16bit bigreal
-  mode calls. SeaBIOS only uses this area to maintain compatibility
-  with legacy systems.
+* 0x09FC00-0x0A0000（典型）：扩展 BIOS 数据区 (EBDA)。 这
+   区域包含一些遗留标志和属性。 面积为
+   通常位于 0x9FC00，但可以通过选项 ROM 移动它
+   传统操作系统，并且通过 SeaBIOS 如果
+   CONFIG_MALLOC_UPPERMEMORY 未设置。 它的实际位置是
+   由 BDA 中的指针确定。 该区域可读/写
+   运行时并且可以从 16 位实模式和 16 位 bigreal 访问
+   模式调用。 SeaBIOS 仅使用此区域来保持兼容性
+   与遗留系统。
 
-* 0x0E0000-0x0F0000 (typical): "low" memory. This area is used for
-  custom read/writable storage internal to SeaBIOS. The area is
-  read/writable at runtime and can be accessed from 16bit real mode
-  and 16bit bigreal mode calls. The area is typically located at the
-  end of the e-segment, but the build may position it anywhere in the
-  0x0C0000-0x0F0000 region. However, if CONFIG_MALLOC_UPPERMEMORY is
-  not set, then this region is between 0x090000-0x0A0000. Space is
-  allocated in this region by either marking a global variable with
-  the "VARLOW" flag or by calling malloc_low() during
-  initialization. The area can be grown dynamically (via malloc_low),
-  but it will never exceed 64K.
+* 0x0E0000-0x0F0000（典型）：“低”内存。 该区域用于
+   SeaBIOS 内部的自定义读/写存储。 面积为
+   运行时可读/写，可从 16 位实模式访问
+   和 16 位 bigreal 模式调用。 该区域通常位于
+   e 段的末尾，但构建可能会将其定位在 e 段的任何位置
+   0x0C0000-0x0F0000 区域。 但是，如果 CONFIG_MALLOC_UPPERMEMORY 为
+   没有设置，那么这个区域在0x090000-0x0A0000之间。 空间是
+   通过标记全局变量来分配该区域
+   “VARLOW”标志或通过在期间调用 malloc_low()
+   初始化。 该区域可以动态增长（通过 malloc_low），
+   但永远不会超过64K。
 
-* 0x0F0000-0x100000: The BIOS segment. This area is used for both
-  runtime code and static variables. Space is allocated in this region
-  by either marking a global variable with VAR16, one of the VARFSEG
-  flags, or by calling malloc_fseg() during initialization. The area
-  is read-only at runtime and can be accessed from 16bit real mode,
-  16bit bigreal mode, 16bit protected mode, and 32bit segmented mode
-  calls.
+* 0x0F0000-0x100000：BIOS 段。 该区域同时用于
+   运行时代码和静态变量。 空间分配在该区域
+   通过使用 VAR16（VARFSEG 之一）标记全局变量
+   标志，或在初始化期间调用 malloc_fseg()。 该地区
+   在运行时是只读的，可以从16位实模式访问，
+   16位大实数模式、16位保护模式和32位分段模式
+   来电。
 
-All of the above areas are also read/writable during the SeaBIOS
-initialization phase and are accessible when in 32bit flat mode.
+上述所有区域在 SeaBIOS 期间也是可读/写的
+初始化阶段，并且在 32 位平面模式下可访问。
 
-Segmented mode memory access
-============================
+分段模式内存访问
+===========================
 
-The assembler entry functions for segmented mode calls (all modes
-except [32bit flat mode](#32bit_flat_mode)) will arrange
-to set the data segment (%ds) to be the same as the stack segment
-(%ss) before calling any C code. This permits all C variables located
-on the stack and C pointers to data located on the stack to work as
-normal.
+分段模式调用的汇编器入口函数（所有模式
+除了 [32bit 平面模式](#32bit_flat_mode)) 会安排
+将数据段（%ds）设置为与堆栈段相同
+(%ss) 在调用任何 C 代码之前。 这允许所有 C 变量位于
+在堆栈上和指向位于堆栈上的数据的 C 指针作为
+普通的。
 
-However, all code running in segmented mode must wrap non-stack memory
-accesses in special macros. These macros ensure the correct segment
-register is used. Failure to use the correct macro will result in an
-incorrect memory access that will likely cause hard to find errors.
+但是，所有以分段模式运行的代码都必须包装非堆栈内存
+访问特殊宏。 这些宏确保正确的段
+使用寄存器。 未能使用正确的宏将导致
+不正确的内存访问可能会导致难以发现的错误。
 
-There are three low-level memory access macros:
+共有三个低级内存访问宏：
 
-* GET_VAR / SET_VAR : Accesses a variable using the specified segment
-  register. This isn't typically used directly by C code.
+* GET_VAR / SET_VAR : 使用指定段访问变量
+   登记。 C 代码通常不直接使用它。
 
-* GET_FARVAR / SET_FARVAR : Assigns the extra segment (%es) to the
-  given segment id and then performs the given memory access via %es.
+* GET_FARVAR / SET_FARVAR : 将额外段 (%es) 分配给
+   给定的段 id，然后通过 %es 执行给定的内存访问。
 
-* GET_FLATPTR / SET_FLATPTR : These macros take a 32bit pointer,
-  construct a segment/offset pair valid in real mode, and then perform
-  the given access. These macros must not be used in 16bit protected
-  mode or 32bit segmented mode.
+* GET_FLATPTR / SET_FLATPTR ：这些宏采用 32 位指针，
+   构造一个实模式下有效的段/偏移对，然后执行
+   给定的访问权限。 这些宏不得在 16 位保护中使用
+   模式或32位分段模式。
 
-Since most memory accesses are to [common memory used at
-run-time](#Common_memory_used_at_run-time), several helper
-macros are also available.
+由于大多数内存访问都是针对[常用内存
+运行时](#Common_memory_used_at_run-time)，几个助手
+宏也可用。
 
-* GET_IDT / SET_IDT : Access the interrupt descriptor table (IDT).
+* GET_IDT / SET_IDT ：访问中断描述符表（IDT）。
 
-* GET_BDA / SET_BDA : Access the BIOS Data Area (BDA).
+* GET_BDA / SET_BDA : 访问 BIOS 数据区 (BDA)。
 
-* GET_EBDA / SET_EBDA : Access the Extended BIOS Data Area (EBDA).
+* GET_EBDA / SET_EBDA ：访问扩展 BIOS 数据区 (EBDA)。
 
-* GET_LOW / SET_LOW : Access internal variables marked with
-  VARLOW. (There are also related macros GET_LOWFLAT / SET_LOWFLAT for
-  accessing storage allocated with malloc_low.)
+* GET_LOW / SET_LOW : 访问标有的内部变量
+   瓦洛。 （还有相关的宏 GET_LOWFLAT / SET_LOWFLAT 用于
+   访问使用 malloc_low 分配的存储。）
 
-* GET_GLOBAL : Access internal variables marked with the VAR16 or
-  VARFSEG flags. (There is also the related macro GET_GLOBALFLAT for
-  accessing storage allocated with malloc_fseg.)
+* GET_GLOBAL : 访问标有 VAR16 或 VAR16 的内部变量
+   VARFSEG 标志。 （还有相关的宏GET_GLOBALFLAT
+   访问使用 malloc_fseg 分配的存储。）
 
-Memory available during initialization
-======================================
+初始化期间可用的内存
+=======================================
 
-During the POST [phase](Execution and code flow) the code
-can fully access the first 4 gigabytes of memory. However, memory
-accesses are generally limited to the [common memory used at
-run-time](#Common_memory_used_at_run-time) and areas
-allocated at runtime via one of the malloc calls:
+在 POST [阶段]（执行和代码流）期间，代码
+可以完全访问前 4 个演出字节内存。 然而，记忆
+访问通常仅限于[常用内存
+运行时](#Common_memory_used_at_run-time) 和区域
+在运行时通过 malloc 调用之一分配：
 
-* malloc_high : Permanent high-memory zone. This area is used for
-  custom read/writable storage internal to SeaBIOS. The area is
-  located at the top of the first 4 gigabytes of ram. It is commonly
-  used for storing standard tables accessed by the operating system at
-  runtime (ACPI, SMBIOS, and MPTable) and for DMA buffers used by
-  hardware drivers. The area is read/writable at runtime and an entry
-  in the e820 memory map is used to reserve it. When running on an
-  emulator that has only 1 megabyte of ram this zone will be empty.
+* malloc_high ：永久高内存区域。 该区域用于
+   SeaBIOS 内部的自定义读/写存储。 面积为
+   位于前 4 GB 内存的顶部。 常见的是
+   用于存储操作系统访问的标准表
+   运行时（ACPI、SMBIOS 和 MPTable）以及使用的 DMA 缓冲区
+   硬件驱动程序。 该区域在运行时是读/写的，并且有一个条目
+   在e820内存映射中用于保留它。 当运行在
+   只有 1 MB 内存的模拟器此区域将为空。
 
-* malloc_tmphigh : Temporary high-memory zone. This area is used for
-  custom read/writable storage during the SeaBIOS initialization
-  phase. The area generally starts after the first 1 megabyte of ram
-  (0x100000) and ends prior to the Permanent high-memory zone. When
-  running on an emulator that has only 1 megabyte of ram this zone
-  will be empty. The area is not reserved from the operating system,
-  so it must not be accessed after the SeaBIOS initialization phase.
+* malloc_tmphigh ：临时高内存区域。 该区域用于
+   SeaBIOS 初始化期间的自定义读/写存储
+   阶段。 该区域一般在 ram 的第一个 1 MB 之后开始
+   (0x100000) 并在永久高内存区域之前结束。 什么时候
+   在该区域只有 1 MB 内存的模拟器上运行
+   将是空的。 该区域不是操作系统保留的，
+   因此在 SeaBIOS 初始化阶段后不得对其进行访问。
 
-* malloc_tmplow : Temporary low-memory zone. This area is used for
-  custom read/writable storage during the SeaBIOS initialization
-  phase. The area resides between 0x07000-0x90000. The area is not
-  reserved from the operating system and by specification it is
-  required to be zero'd at the end of the initialization phase.
+* malloc_tmplow ：临时低内存区域。 该区域用于
+   SeaBIOS 初始化期间的自定义读/写存储
+   阶段。 该区域位于 0x07000-0x90000 之间。 该地区不是
+   从操作系统中保留，并且根据规范它是
+   需要在初始化阶段结束时归零。
 
-The "tmplow" and "tmphigh" regions are only available during the
-initialization phase. Any access (either read or write) after
-completion of the initialization phase can result in difficult to find
-errors.
+“tmplow”和“tmphigh”区域仅在
+初始化阶段。 之后的任何访问（读或写）
+初始化阶段完成可能会导致很难找到错误。

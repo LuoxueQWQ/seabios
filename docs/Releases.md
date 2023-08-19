@@ -1,530 +1,530 @@
-History of SeaBIOS releases. Please see [download](Download) for
-information on obtaining these releases.
+SeaBIOS 版本的历史记录。 请参阅[下载]（下载）
+有关获取这些版本的信息。
 
-SeaBIOS 1.16.0
-==============
-
-Available on 20220301. Major changes in this release:
-
-* SMBIOS v3.0 support on QEMU
-* Several bug fixes and code cleanups.
-
-SeaBIOS 1.15.0
-==============
-
-Available on 20211202. Major changes in this release:
-
-* Improved support for USB devices with multiple interfaces.
-* Support for USB XHCI devices using direct MMIO access (instead of PCI).
-* NVMe improvements.
-* Increased "f-segment" RAM allocations for BIOS tables.
-* Several bug fixes and code cleanups.
-
-SeaBIOS 1.14.0
-==============
-
-Available on 20200810. Major changes in this release:
-
-* New virtio MMIO support. Support for finding virtio MMIO devices via
-  an ACPI DSDT parser. Support for handling a large number of virtio
-  devices.
-* Improved handling of USB keyboards with non-standard packet size.
-* Improved KVM CPU frequency detection.
-* Support for PCI mmconfig support on QEMU.
-* Several bug fixes and code cleanups.
-
-SeaBIOS 1.13.0
-==============
-
-Available on 20191209. Major changes in this release:
-
-* Support for reading logical CHS drive information from QEMU
-* Workaround added for misbehaving optionroms that grab "int19"
-* The TPM 2 "PCR bank" option can now be set from the TPM menu
-* SeaVGABIOS support for QEMU "atiext" display
-* Several bug fixes and code cleanups
-
-SeaBIOS 1.12.0
-==============
-
-Available on 20181117. Major changes in this release:
-
-* Initial support for "TPM CRB" hardware
-* Improved cdrom media reporting in the boot menu on QEMU
-* Improved floppy support on real floppy hardware
-* SeaVGABIOS support for QEMU "bochs-display" and QEMU "ramfb" displays
-* Several bug fixes and code cleanups
-
-SeaBIOS 1.12.1
---------------
-
-Available on 20190314. Stable release containing only bug fixes.
-
-SeaBIOS 1.11.0
-==============
-
-Available on 20171110. Major changes in this release:
-
-* Initial support for NVME drives
-* Support for vga emulation over a serial port in SeaBIOS (sercon)
-* Support for serial debugging using MMIO based serial ports
-* Support for scsi devices with multiple LUNs
-* Support for boot-to-boot persistent coreboot cbmem logs
-* Improved coreboot vga (cbvga) mode setting compatibility
-* Several bug fixes and code cleanups
-
-SeaBIOS 1.11.1
---------------
-
-Available on 20180319. Stable release containing only bug fixes.
-
-SeaBIOS 1.11.2
---------------
-
-Available on 20180702. Stable release containing only bug fixes.
-
-SeaBIOS 1.10.0
-==============
-
-Available on 20161026. Major changes in this release:
-
-* Initial support for Trusted Platform Module (TPM) version 2.0
-* Several USB XHCI timing fixes on real hardware
-* Support for "LSI MPT Fusion" scsi controllers on QEMU
-* Support for virtio devices mapped above 4GB
-* Several bug fixes and code cleanups
-
-SeaBIOS 1.10.1
---------------
-
-Available on 20161122. Stable release containing only bug fixes.
-
-
-SeaBIOS 1.10.2
---------------
-
-Available on 20170228. Stable release containing only bug fixes.
-
-SeaBIOS 1.10.3
---------------
-
-Available on 20171019. Stable release containing only bug fixes.
-
-SeaBIOS 1.9.0
+海BIOS 1.16.0
 =============
 
-Available on 20151117. Major changes in this release:
+于 20220301 发布。此版本中的主要变化：
 
-* The default boot menu key is now the ESC key (instead of F12)
-* Initial support for Trusted Platform Module (TPM) hardware and BIOS calls
-* Initial support for chain loading SeaBIOS from Grub (via multiboot
-  support)
-* Initial support for booting from SD cards on real hardware
-* virtio 1.0 device support
-* The build will no longer include the build hostname or build time on
-  "clean" builds.  This makes the build binaries more "reproducible".
-* Basic support for running SeaBIOS on Baytrail Chromebooks
-* SeaVGABIOS improvements:
-    * Improved support for old versions of x86emu (the "leal"
-      instruction is now emulated)
-* Several bug fixes and code cleanups
+* QEMU 支持 SMBIOS v3.0
+* 多个错误修复和代码清理。
 
-SeaBIOS 1.9.1
--------------
-
-Available on 20160215. Stable release containing only bug fixes.
-
-SeaBIOS 1.9.2
--------------
-
-Available on 20160422. Stable release containing only bug fixes.
-
-SeaBIOS 1.9.3
--------------
-
-Available on 20160701. Stable release containing only bug fixes.
-
-SeaBIOS 1.8.0
+海BIOS 1.15.0
 =============
 
-Available on 20150218. Major changes in this release:
+于 20211202 发布。此版本中的主要更改：
 
-* Several USB timing fixes for USB controllers on real hardware
-* Initial support for USB3 hubs
-* Initial support for SD cards (on QEMU only)
-* Initial support for transitioning to 32bit mode using SMIs (on QEMU
-  TCG only)
-* SeaVGABIOS improvements
-    * Added cursor emulation to coreboot native init vgabios (cbvga)
-    * Added support for read character calls when in graphics mode
-* Developer documentation added to "docs/" directory in the code
-  repository and several documentation updates
-* Several bug fixes and code cleanups
+* 改进了对具有多个接口的 USB 设备的支持。
+* 支持使用直接 MMIO 访问（而不是 PCI）的 USB XHCI 设备。
+* NVMe 改进。
+* 增加了 BIOS 表的“f 段”RAM 分配。
+* 多个错误修复和代码清理。
 
-As of the 1.8.0 release, new feature releases will modify the first
-two release numbers (eg, 1.8) and stable releases will use three
-numbers (eg, 1.8.1). The prior behavior of using a forth number
-(eg, 1.7.5.1) for stable releases will no longer be used.
-
-SeaBIOS 1.8.1
--------------
-
-Available on 20150316. Stable release containing only bug fixes.
-
-SeaBIOS 1.8.2
--------------
-
-Available on 20150617. Stable release containing only bug fixes.
-
-SeaBIOS 1.7.5
+海BIOS 1.14.0
 =============
 
-Available on 20140528. Major changes in this release:
+发布日期：20200810。此版本的主要变化：
 
-* Support for obtaining SMBIOS tables directly from QEMU.
-* XHCI USB controller fixes for real hardware (now tested on several
-  boards)
-* SeaVGABIOS improvements
-    * New driver for "coreboot native vga" support
-    * Improved detection of older x86emu versions with incorrect
-      emulation.
-* Several bug fixes and code cleanups
+* 新的 virtio MMIO 支持。 支持通过以下方式查找 virtio MMIO 设备
+   ACPI DSDT 解析器。 支持处理大量virtio
+   设备。
+* 改进了对非标准数据包大小的 USB 键盘的处理。
+* 改进了 KVM CPU 频率检测。
+* 支持 QEMU 上的 PCI mmconfig 支持。
+* 多个错误修复和代码清理。
+
+海BIOS 1.13.0
+=============
+
+于 20191209 发布。此版本中的主要更改：
+
+* 支持从QEMU读取逻辑CHS驱动器信息
+* 针对抓取“int19”的行为不当的选项添加了解决方法
+* 现在可以从 TPM 菜单设置 TPM 2“PCR 库”选项
+* SeaVGABIOS 支持 QEMU“atiext”显示
+* 一些错误修复和代码清理
+
+海BIOS 1.12.0
+=============
+
+于 20181117 发布。此版本的主要变化：
+
+* 初步支持“TPM CRB”硬件
+* 改进了 QEMU 启动菜单中的 cdrom 媒体报告
+* 改进了对真实软盘硬件的软盘支持
+* SeaVGABIOS 支持 QEMU“bochs-display”和 QEMU“ramfb”显示
+* 一些错误修复和代码清理
+
+海BIOS 1.12.1
+--------------
+
+于 20190314 提供。稳定版本仅包含错误修复。
+
+海BIOS 1.11.0
+=============
+
+于 20171110 发布。此版本中的主要更改：
+
+* 初步支持 NVME 驱动器
+* 支持 SeaBIOS (sercon) 中通过串行端口进行 vga 仿真
+* 支持使用基于MMIO的串口进行串行调试
+* 支持具有多个 LUN 的 scsi 设备
+* 支持启动到启动持久 coreboot cbmem 日志
+* 改进 coreboot vga (cbvga) 模式设置兼容性
+* 一些错误修复和代码清理
+
+海BIOS 1.11.1
+--------------
+
+于 20180319 提供。稳定版本仅包含错误修复。
+
+海BIOS 1.11.2
+--------------
+
+于 20180702 提供。仅包含错误修复的稳定版本。
+
+海BIOS 1.10.0
+=============
+
+于 20161026 发布。此版本中的主要更改：
+
+* 初步支持可信平台模块 (TPM) 2.0 版
+* 真实硬件上的几个 USB XHCI 时序修复
+* 在 QEMU 上支持“LSI MPT Fusion”scsi 控制器
+* 支持映射4GB以上的virtio设备
+* 一些错误修复和代码清理
+
+海BIOS 1.10.1
+--------------
+
+于 20161122 提供。稳定版本仅包含错误修复。
+
+
+海BIOS 1.10.2
+--------------
+
+于 20170228 提供。稳定版本仅包含错误修复。
+
+海BIOS 1.10.3
+--------------
+
+于 20171019 发布。稳定版本仅包含错误修复。
+
+海BIOS 1.9.0
+=============
+
+于 20151117 发布。此版本中的主要变化：
+
+* 默认启动菜单键现在是 ESC 键（而不是 F12）
+* 初步支持可信平台模块 (TPM) 硬件和 BIOS 调用
+* 初步支持从 Grub 链式加载 SeaBIOS（通过多重引导）
+   支持）
+* 初步支持在真实硬件上从 SD 卡启动
+* virtio 1.0 设备支持
+* 构建将不再包含构建主机名或构建时间
+   “干净”的构建。 这使得构建二进制文件更加“可重现”。
+* 对在 Baytrail Chromebook 上运行 SeaBIOS 的基本支持
+* SeaVGABIOS 改进：
+     * 改进了对旧版本 x86emu（“leal”）的支持
+       现在已模拟指令）
+* 一些错误修复和代码清理
+
+海BIOS 1.9.1
+-------------
+
+于 20160215 发布。稳定版本仅包含错误修复。
+
+海BIOS 1.9.2
+-------------
+
+于 20160422 提供。仅包含错误修复的稳定版本。
+
+海BIOS 1.9.3
+-------------
+
+于 20160701 提供。仅包含错误修复的稳定版本。
+
+海BIOS 1.8.0
+=============
+
+于 20150218 发布。此版本中的主要更改：
+
+* 修复了真实硬件上 USB 控制器的多个 USB 时序问题
+* 初步支持 USB3 集线器
+* 初步支持 SD 卡（仅在 QEMU 上）
+* 最初支持使用 SMI 转换到 32 位模式（在 QEMU 上）
+   仅TCG）
+* SeaVGABIOS 改进
+     * 添加光标模拟到 coreboot 本机 init vgabios (cbvga)
+     * 添加了对图形模式下读取字符调用的支持
+* 开发者文档添加到代码中的“docs/”目录中
+   存储库和一些文档更新
+* 一些错误修复和代码清理
+
+从 1.8.0 版本开始，新功能版本将修改第一个
+两个版本号（例如 1.8），稳定版本将使用三个
+数字（例如，1.8.1）。 使用第四个数字的先前行为
+（例如，1.7.5.1）用于稳定版本将不再使用ases。
+
+海BIOS 1.8.1
+-------------
+
+于 20150316 提供。仅包含错误修复的稳定版本。
+
+海BIOS 1.8.2
+-------------
+
+于 20150617 提供。仅包含错误修复的稳定版本。
+
+海BIOS 1.7.5
+=============
+
+发布日期：20140528。此版本的主要变化：
+
+* 支持直接从QEMU获取SMBIOS表。
+* 针对真实硬件的 XHCI USB 控制器修复（现已在多个设备上进行测试）
+   板）
+* SeaVGABIOS 改进
+     * 支持“coreboot native vga”的新驱动程序
+     * 改进了对较旧 x86emu 版本的错误检测
+       仿真。
+* 一些错误修复和代码清理
 
 SeaBIOS 1.7.5.1
----------------
+----------------
 
-Available on 20141113. Stable release containing only bug fixes.
+于 20141113 提供。稳定版本仅包含错误修复。
 
 SeaBIOS 1.7.5.2
----------------
+----------------
 
-Available on 20150112. Stable release containing only bug fixes.
+于 20150112 提供。稳定版本仅包含错误修复。
 
-SeaBIOS 1.7.4
+海BIOS 1.7.4
 =============
 
-Available on 20131223. Major changes in this release:
+于 20131223 发布。此版本中的主要更改：
 
-* Support for obtaining ACPI tables directly from QEMU.
-* Initial support for XHCI USB controllers (initially for QEMU only).
-* Support for booting from "pvscsi" devices on QEMU.
-* Enhanced floppy driver - improved support for real hardware.
-* coreboot cbmem console support.
-* Optional support for using the 9-segment instead of the e-segment
-  for local variables.
-* Improved internal timer code and accuracy.
-* SeaVGABIOS improvements
-    * Better support for legacy X.org releases with incomplete x86emu
-      emulation.
-    * Support for using an internal stack to reduce caller's stack
-      usage.
-    * Back port of new "bochs dispi" interface video modes.
-* Several bug fixes and code cleanups
-    * Source code separated out into additional hardware and firmware
-      directories.
-    * Update to latest version of Kconfig
+* 支持直接从QEMU获取ACPI表。
+* 最初支持 XHCI USB 控制器（最初仅适用于 QEMU）。
+* 支持从 QEMU 上的“pvscsi”设备启动。
+* 增强的软盘驱动程序 - 改进了对真实硬件的支持。
+* coreboot cbmem 控制台支持。
+* 可选支持使用 9 段代替 e 段
+   对于局部变量。
+* 改进了内部定时器代码和准确性。
+* SeaVGABIOS 改进
+     * 更好地支持不完整的 x86emu 的旧版 X.org 版本
+       仿真。
+     * 支持使用内部堆栈来减少调用者的堆栈
+       用法。
+     * 新的“bochs dispi”接口视频模式的背面端口。
+* 一些错误修复和代码清理
+     * 源代码分为附加硬件和固件
+       目录。
+     * 更新到最新版本的Kconfig
 
-SeaBIOS 1.7.3
+海BIOS 1.7.3
 =============
 
-Available on 20130707. Major changes in this release:
+发布日期：20130707。此版本的主要变化：
 
-* Initial support for using SeaBIOS as a UEFI Compatibility Support
-  Module (CSM)
-* Support for detecting and using ACPI reboot ports.
-* By default, all 16bit entry points now use an internal stack to
-  reduce stack footprint.
-* Floppy controller code has been rewritten to improve
-  compatibility. Non-standard floppy sizes now work again with recent
-  QEMU versions.
-* Several bug fixes and code cleanups
+* 初步支持使用 SeaBIOS 作为 UEFI 兼容性支持
+   模块（CSM）
+* 支持检测和使用 ACPI 重启端口。
+* 默认情况下，所有 16 位入口点现在都使用内部堆栈
+   减少堆栈占用空间。
+* 软盘控制器代码已被重写以改进
+   兼容性。 非标准软盘尺寸现在可以再次与最近的软盘一起使用
+   QEMU 版本。
+* 一些错误修复和代码清理
 
-SeaBIOS 1.7.2
+海BIOS 1.7.2
 =============
 
-Available on 20130118. Major changes in this release:
+发布日期：20130118。此版本的主要变化：
 
-* Support for ICH9 host chipset ("q35") on emulators
-* Support for booting from LSI MegaRAID SAS controllers
-* Support for using the ACPI PM timer on emulators
-* Improved Geode VGA BIOS support.
-* Several bug fixes
+* 支持模拟器上的 ICH9 主机芯片组（“q35”）
+* 支持从 LSI MegaRAID SAS 控制器启动
+* 支持在模拟器上使用 ACPI PM 计时器
+* 改进了 Geode VGA BIOS 支持。
+* 修复了一些错误
 
 SeaBIOS 1.7.2.1
----------------
+----------------
 
-Available on 20130227. Stable release containing only bug fixes.
+于 20130227 提供。稳定版本仅包含错误修复。
 
 SeaBIOS 1.7.2.2
----------------
+----------------
 
-Available on 20130527. Stable release containing only bug fixes.
+于 20130527 提供。稳定版本仅包含错误修复。
 
-SeaBIOS 1.7.1
+海BIOS 1.7.1
 =============
 
-Available on 20120831. Major changes in this release:
+发布日期：20120831。此版本的主要变化：
 
-* Initial support for booting from USB attached scsi (USB UAS) drives
-* USB EHCI 64bit controller support
-* USB MSC multi-LUN device support
-* Support for booting from LSI SCSI controllers on emulators
-* Support for booting from AMD PCscsi controllers on emulators
-* New PCI allocation code on emulators. Support 64bit PCI bars and
-  mapping them above 4G.
-* Support for non-linear APIC ids on emulators.
-* Stack switching for 16bit real mode irq handlers to reduce stack
-  footprint.
-* Support for custom storage in the memory at 0xc0000-0xf0000. No
-  longer reserve memory for custom storage in first 640k.
-* Improved code generation for 16bit segment register loads
-* Boot code will now (by default) reboot after 60 seconds if no boot
-  device found
-* CBFS and FWCFG "files" are now only scanned one time
-* Several bug fixes
+* 初步支持从 USB 连接的 scsi (USB UAS) 驱动器启动
+* USB EHCI 64位控制器支持
+* USB MSC多LUN设备支持
+* 支持从模拟器上的 LSI SCSI 控制器启动
+* 支持从模拟器上的 AMD PCscsi 控制器启动
+* 模拟器上的新 PCI 分配代码。 支持 64 位 PCI 条和
+   将它们映射到 4G 以上。
+* 支持模拟器上的非线性 APIC id。
+* 16 位实模式中断处理程序的堆栈切换以减少堆栈
+   脚印。
+* 支持自定义存储在内存0xc0000-0xf0000处。 不
+   在前 640k 中为自定义存储保留更长的内存。
+* 改进了 16 位段寄存器加载的代码生成
+* 如果没有启动，启动代码现在（默认情况下）将在 60 秒后重新启动
+   找到设备
+* CBFS 和 FWCFG“文件”现在仅扫描一次
+* 修复了一些错误
 
-SeaBIOS 1.7.0
+海BIOS 1.7.0
 =============
 
-Available on 20120414. Major changes in this release:
+发布日期：20120414。此版本的主要变化：
 
-* Many enhancements to VGA BIOS code - it should now be feature
-  complete with LGPL vgabios.
-* Support for virtio-scsi.
-* Improved USB drive (usb-msc) support.
-* Several USB controller bug fixes and improvements.
-* Runtime ACPI AML PCI hotplug construction.
-* Support for running on i386 and i486 CPUs.
-* Enhancements to PCI init when running on emulators.
-* Several bug fixes
+* VGA BIOS 代码的许多增强 - 现在应该是功能
+   配有 LGPL vgabios。
+* 支持 virtio-scsi。
+* 改进了 USB 驱动器 (usb-msc) 支持。
+* 多个 USB 控制器错误修复和改进。
+* 运行时 ACPI AML PCI 热插拔构造。
+* 支持在 i386 和 i486 CPU 上运行。
+* 增强了在模拟器上运行时的 PCI 初始化。
+* 修复了一些错误
 
-SeaBIOS 1.6.3
+海BIOS 1.6.3
 =============
 
-Available on 20111004. Major changes in this release:
+于 20111004 提供。此版本中的主要更改：
 
-* Initial support for Xen
-* PCI init (on emulators) uses a two-phase initialization
-* Fixes for AHCI so it can work on real hardware. AHCI is now enabled
-  by default.
-* Bootsplash support for BMP files
-* Several configuration options can now be configured at runtime via
-  CBFS files (eg, "etc/boot-menu-wait")
-* PCI device scan is cached during POST phase
-* Several bug fixes
+* 初步支持 Xen
+* PCI init（在模拟器上）使用两阶段初始化
+* 修复了 AHCI，使其可以在真实硬件上运行。 AHCI 现已启用
+   默认情况下。
+* Bootsplash 支持 BMP 文件
+* 现在可以通过以下方式在运行时配置多个配置选项
+   CBFS 文件（例如“etc/boot-menu-wait”）
+* PCI 设备扫描在 POST 阶段被缓存
+* 修复了一些错误
 
-The SeaBIOS 1.6.3 release was an incremental feature release. The
-first release number (1) was incremented as the project was no longer
-in a beta stage, and the third release number (3) was also incremented
-to indicate the release was a regular feature release.
+SeaBIOS 1.6.3 版本是增量功能版本。 这
+第一个版本号 (1) 增加，因为该项目不再
+处于测试阶段，第三个版本号（3）也增加了
+表明该版本是常规功能版本。
 
-SeaBIOS 1.6.3.1
----------------
+海BIOS 1.6.3.1
+----------------
 
-Available on 20111124. Stable release containing only bug fixes.
+于 20111124 提供。稳定版本仅包含错误修复。
 
-SeaBIOS 1.6.3.2
----------------
+海BIOS 1.6.3.2
+----------------
 
-Available on 20120311. Stable release containing only bug fixes.
+于 201203 上市11. 稳定版本仅包含错误修复。
 
-SeaBIOS 0.6.2
+海BIOS 0.6.2
 =============
 
-Available on 20110228. Major changes in this release:
+于 20110228 发布。此版本中的主要更改：
 
-* Setup code can relocate to high-memory to save space in c-f segments
-* Build now configured via Kconfig
-* Experimental support for AHCI controllers
-* Support for run-time configuration of the boot order (via
-  CBFS/fw_cfg "bootorder" file)
-* Support T13 EDD3.0 spec
-* Improved bounds checking on PCI memory allocation
-* Several bug fixes
+* 设置代码可以重定位到高内存以节省 c-f 段的空间
+* 现在通过 Kconfig 配置构建
+* 对 AHCI 控制器的实验支持
+* 支持运行时配置启动顺序（通过
+   CBFS/fw_cfg“引导顺序”文件）
+* 支持T13 EDD3.0规格
+* 改进了 PCI 内存分配的边界检查
+* 修复了一些错误
 
-SeaBIOS 0.6.1
+海BIOS 0.6.1
 =============
 
-Available on 20100913. Major changes in this release:
+发布日期：20100913。此版本的主要变化：
 
-* Support for virtio drives
-* Add ACPI definitions for cpu hotplug support
-* Support for a graphical bootsplash screen
-* USB mouse support
-* The PCI support for emulators is less dependent on i440 chipset
-* New malloc implementation which improves memalign and free
-* The build system no longer double links objects
-* Several bug fixes
+* 支持virtio驱动器
+* 添加 CPU 热插拔支持的 ACPI 定义
+* 支持图形启动画面
+* USB鼠标支持
+* 对仿真器的 PCI 支持较少依赖于 i440 芯片组
+* 新的 malloc 实现改进了 memalign 和 free
+* 构建系统不再双重链接对象
+* 修复了一些错误
 
 SeaBIOS 0.6.1.1
----------------
+----------------
 
-Available on 20101031. Stable release containing only bug fixes.
+于 20101031 发布。稳定版本仅包含错误修复。
 
 SeaBIOS 0.6.1.2
----------------
+----------------
 
-Available on 20101113. Stable release containing only bug fixes.
+于 20101113 发布。稳定版本仅包含错误修复。
 
 SeaBIOS 0.6.1.3
----------------
+----------------
 
-Available on 20101226. Stable release containing only bug fixes.
+于 20101226 发布。稳定版本仅包含错误修复。
 
-SeaBIOS 0.6.0
+海BIOS 0.6.0
 =============
 
-Available on 20100326. Major changes in this release:
+发布于 20100326。此版本中的主要更改：
 
-* USB hub support
-* USB drive booting support
-* USB keyboard auto-repeat support
-* USB EHCI controller support
-* Several improvements to compatibility of PS2 port handlers for old
-  code
-* Support for qemu e820 interface
-* Several bug fixes and code cleanups
+* USB集线器支持
+* USB驱动器启动支持
+* USB键盘自动重复支持
+* USB EHCI 控制器支持
+* 对旧版 PS2 端口处理程序的兼容性进行了多项改进
+   代码
+* 支持qemu e820接口
+* 一些错误修复和代码清理
 
-SeaBIOS 0.5.1
+海BIOS 0.5.1
 =============
 
-Available on 20100108. Major changes in this release:
+于 20100108 发布。此版本中的主要更改：
 
-* Support for 32bit PCI BIOS calls
-* Support for int1589 calls
-* MPTable fixes for OpenBSD
-* ATA DMA and bus-mastering support
-* Several bug fixes and code cleanups
+* 支持32位PCI BIOS调用
+* 支持int1589调用
+* 针对 OpenBSD 的 MPTable 修复
+* ATA DMA 和总线主控支持
+* 一些错误修复和代码清理
 
-SeaBIOS 0.5.0
+海BIOS 0.5.0
 =============
 
-Available on 20091218. Major changes in this release:
+于 20091218 提供。此版本中的主要更改：
 
-* Several enhancements ported from the Bochs BIOS derived code in qemu
-  and kvm
-* Support for parallel hardware initialization to reduce bootup times
-* Enable PCI option rom support by default (Bochs users must now
-  enable CONFIG_OPTIONROMS_DEPLOYED in src/config.h). Support added
-  for extracting option roms from qemu "fw_cfg".
-* Support USB UHCI and OHCI controllers
-* Initial support for USB keyboards
-* SeaBIOS can now be greater than 64K
-* Support for permanent low memory allocations
-* APIC "local interrupts" now enabled in SeaBIOS (on emulators)
-* Several bug fixes and code cleanups
+* 从 qemu 中的 Bochs BIOS 派生代码移植的多项增强功能
+   和kvm
+* 支持并行硬件初始化以减少启动时间
+* 默认启用 PCI 选项 ROM 支持（Bochs 用户现在必须
+   在 src/config.h 中启用 CONFIG_OPTIONROMS_DEPLOYED）。 已添加支持
+   用于从 qemu“fw_cfg”中提取选项 ROM。
+* 支持USB UHCI和OHCI控制器
+* 初步支持 USB 键盘
+* SeaBIOS 现在可以大于 64K
+* 支持永久低内存分配
+* APIC“本地中断”现在在 SeaBIOS 中启用（在模拟器上）
+* 一些错误修复和代码清理
 
-SeaBIOS 0.4.2
+海BIOS 0.4.2
 =============
 
-Available on 20090909. Major changes in this release:
+于 20090909 提供。此版本中的主要更改：
 
-* Implement Post Memory Manager (PMM) support. Use equivalent "malloc"
-  functions for internal allocations as well.
-* Refactor disk "block" interface for greater expandability
-* Support CBFS based floppy images
-* Allow boot menu to select either floppy to boot from
-* Increase ebda size to store a CDROM harddrive/floppy emulation
-  buffer
-* Support systems with multiple vga cards (only the card with the
-  legacy IO ranges mapped will have its option rom executed)
-* Make option rom memory be writable during option rom execution (on
-  emulators)
-* Compile version number into code and report on each boot
-* Several bug fixes and code cleanups
+* 实现后内存管理器 (PMM) 支持。 使用等效的“malloc”
+   也有内部分配的功能。
+* 重构磁盘“块”接口以获得更大的扩展性
+* 支持基于CBFS的软盘镜像
+* 允许启动菜单选择软盘启动
+* 增加 ebda 大小以存储 CDROM 硬盘/软盘模拟
+   缓冲
+* 支持具有多个 VGA 卡的系统（仅限具有
+   映射的旧版 IO 范围将执行其选项 ROM）
+* 使选项 ROM 内存在选项 ROM 执行期间可写（on
+   模拟器）
+* 将版本号编译成代码并在每次启动时报告
+* 一些错误修复和代码清理
 
-SeaBIOS 0.4.1
+海BIOS 0.4.1
 =============
 
-Available on 20090714. Major changes in this release:
+发布日期：20090714。此版本的主要变化：
 
-* Support older versions of gcc that predate "-fwhole-program" (eg,
-  v3.x)
-* Add initial port of "LGPL vga bios" code into tree in "vgasrc/"
-  directory
-* Handle ATA drives still "spinning up" during SeaBIOS drive detect
-* Add support for option rom Boot Connection Vectors (BCV)
-* Enhance boot menu to support booting from any drive or any cdrom
-* Support flash based Coreboot File System (CBFS)
-* Support booting from a CBFS "payload"
-* Support coreboot table forwarder
-* Support compile time definitions for multiple root PCI buses
-* New tools/readserial.py tool
-* Several bug fixes and code cleanups
+* 支持早于“-fwhole-program”的旧版本 gcc（例如，
+   v3.x)
+* 将“LGPL vga BIOS”代码的初始端口添加到“vgasrc/”中的树中
+   目录
+* 处理 SeaBIOS 驱动器检测期间仍然“旋转”的 ATA 驱动器
+* 添加对选项 ROM 引导连接向量 (BCV) 的支持
+* 增强启动菜单以支持从任何驱动器或任何 CDROM 启动
+* 支持基于闪存的Coreboot文件系统（CBFS）
+* 支持从 CBFS“有效负载”启动
+* 支持coreboot表转发器
+* 支持多根PCI总线的编译时定义
+* 新工具/readserial.py工具
+* 一些错误修复和代码清理
 
-SeaBIOS 0.4.0
+海BIOS 0.4.0
 =============
 
-Available on 20090206. Major changes in this release:
+于 20090206 发布。此版本中的主要更改：
 
-* Add Bios Boot Specification (BBS) calls; add PnP call stubs
-* Support option roms stored in PCI rom BAR
-* Support rebooting on ctrl+alt+delete key press
-* Scan PCI devices for ATA adapters (don't assume legacy ISA ATA ports
-  are valid)
-* Attempt to automatically determine gcc capabilities/bugs during
-  build
-* Add script to layout 16bit sections at fixed offsets and in
-  compacted space
-* Introduce timestamp counter based delays
-* Support POST calls that are really a resume
-* Use new stack in EBDA for int13 disk calls to reduce stack usage
-* Support the EBDA being relocated by option roms
-* Move many variables from EBDA to global variables (stored in
-  f-segment)
-* Support for PCI bridges when iterating through PCI device list
-* Initial port of several KVM specific features from their Bochs BIOS
-  derived code
-* Access BDA using segment 0x40 and IVT using segment 0x00 (which
-  could be important for 16bit protected mode callers)
-* Several bug fixes and code cleanups
+* 添加Bios启动规范（BBS）调用； 添加 PnP 呼叫存根
+* 支持存储在 PCI rom BAR 中的选项 rom
+* 支持ctrl+alt+delete按键重启
+* 扫描 PCI 设备中的 ATA 适配器（不要假设传统的 ISA ATA 端口
+   有效）
+* 尝试在期间自动确定 gcc 功能/错误
+   建造
+* 添加脚本以在固定偏移处布局 16 位部分并在
+   紧凑的空间
+* 引入基于时间戳计数器的延迟
+* 支持POST调用，真正的简历
+* 在 EBDA 中使用新的堆栈进行 int13 磁盘调用以减少堆栈使用
+* 支持通过选项ROM重定位EBDA
+* 将许多变量从 EBDA 移至全局变量（存储在
+   f 段）
+* 迭代 PCI 设备列表时支持 PCI 桥
+* 来自 Bochs BIOS 的几个 KVM 特定功能的初始移植
+   派生代码
+* 使用段 0x40 访问 BDA，使用段 0x00 访问 IVT（其中
+   对于 16 位保护模式调用者可能很重要）
+* 一些错误修复和代码清理
 
-SeaBIOS 0.3.0
+海BIOS 0.3.0
 =============
 
-Available on 20080817. Major changes in this release:
+20 日发售080817。此版本的主要变化：
 
-* Run boot code (int18/19) in 32bit mode
-* Rewrite of PS2 port handling - new code is more compatible with real
-  hardware
-* Initial support for int155f VGA option rom calls
-* Several bug fixes and code cleanups
+* 在32位模式下运行启动代码(int18/19)
+* 重写 PS2 端口处理 - 新代码与真实环境更兼容
+   硬件
+* 初步支持 int155f VGA option rom 调用
+* 一些错误修复和代码清理
 
-SeaBIOS 0.2.3
+海BIOS 0.2.3
 =============
 
-Available on 20080702. Major changes in this release:
+于 20080702 提供。此版本中的主要更改：
 
-* Initial support for running on real hardware with coreboot
-* Support parsing coreboot tables
-* Support relocating bios tables from high memory when running under
-  coreboot
-* Dynamic e820 map generation
-* Serial debug support
-* New tools/checkstack.py tool
-* Several bug fixes and code cleanups
+* 初步支持使用 coreboot 在真实硬件上运行
+* 支持解析coreboot表
+* 支持在运行时从高内存重新定位BIOS表
+   核心引导
+* 动态e820地图生成
+* 串口调试支持
+* 新的tools/checkstack.py工具
+* 一些错误修复和代码清理
 
-SeaBIOS 0.2.2
+海BIOS 0.2.2
 =============
 
-Formerly known as "legacybios". Available on 20080501. Major changes
-in this release:
+以前称为“legacybios”。 于 20080501 提供。主要变更
+在此版本中：
 
-* Several bug fixes and code cleanups
+* 一些错误修复和代码清理
 
-SeaBIOS 0.2.1
+海BIOS 0.2.1
 =============
 
-Formerly known as "legacybios". Available on 20080406. Major changes
-in this release:
+以前称为“legacybios”。 于 20080406 提供。主要变更
+在此版本中：
 
-* Port of boot menu code from Bochs BIOS
-* Several bug fixes and code cleanups
+* Bochs BIOS 启动菜单代码的移植
+* 一些错误修复和代码清理
 
-SeaBIOS 0.2.0
+海BIOS 0.2.0
 =============
 
-Formerly known as "legacybios". Available on 20080330. Major changes
-in this release:
+以前称为“legacybios”。 于 20080330 提供。主要变更
+在此版本中：
 
-* Completion of initial port of Bochs BIOS code to gcc.
+* 完成 Bochs BIOS 代码到 gcc 的初始移植。

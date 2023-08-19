@@ -1,86 +1,86 @@
-Links to pages with more information.
+包含更多信息的页面链接。
 
-BIOS interfaces
+BIOS接口
 ===============
 
-Ralf Brown's interrupt list
+拉尔夫·布朗的中断列表
 
 * <http://www.cs.cmu.edu/~ralf/files.html>
 
-Memory layout info
+内存布局信息
 
 * <http://stanislavs.org/helppc/bios_data_area.html>
 
-Old PNP BIOS spec
+旧 PNP BIOS 规范
 
 * <ftp://download.intel.com/support/motherboards/desktop/sb/pnpbiosspecificationv10a.pdf>
 
-T13 BIOS Enhanced Disk Drive (drafts):
+T13 BIOS 增强型磁盘驱动器（草稿）：
 
 * <http://www.t10.org/t13/#Project_drafts>
 
-Exported BIOS tables
-====================
+导出的 BIOS 表
+===================
 
-ACPI spec
+ACPI规范
 
 * <http://www.acpi.info/>
 
-PCI IRQ Routing Table Specification
+PCI IRQ 路由表规范
 
 * <http://www.microsoft.com/whdc/archive/pciirq.mspx>
 
-MP configuration table
+MP配置表
 
 * <http://www.intel.com/design/pentium/datashts/242016.htm>
 
-SM BIOS (aka DMI):
+SM BIOS（又名 DMI）：
 
 * <http://www.dmtf.org/standards/smbios/>
 
-Hardware information
-====================
+硬件信息
+===================
 
-info on PIC
+PIC 信息
 
 * <http://www.beyondlogic.org/interrupts/interupt.htm>
 
-info on kbd
+有关 kbd 的信息
 
 * <http://www.computer-engineering.org/ps2protocol/>
 
-info on vga
+有关 VGA 的信息
 
 * <http://www.osdever.net/FreeVGA/home.htm>
 
-info on lpt
+关于LPT的信息
 
 * <http://www.beyondlogic.org/spp/parallel.htm>
 
-info on floppy
+软盘上的信息
 
 * <http://www.isdaman.com/alsos/hardware/fdc/floppy.htm>
 
-info on ata
+关于ATA的信息
 
 * <http://ata.wiki.kernel.org/index.php/Developer_Resources>
 * <http://www.t10.org/t13/#Project_drafts>
 
-info on serial
+序列信息
 
 * <http://www.national.com/ds/PC/PC16550D.pdf>
 
-General information
+一般信息
 ===================
 
-Bochs tech document list
+Bochs技术文档列表
 
 * <http://bochs.sourceforge.net/techdata.html>
 
-Phoenix documents
+凤凰文档
 
 * <http://www.phoenix.com/en/Customer+Services/White+Papers-Specs/PC+Industry+Specifications.htm>
 
-Dosemu information
+多塞姆信息
 
 * <http://www.dosemu.org/docs/README-tech>

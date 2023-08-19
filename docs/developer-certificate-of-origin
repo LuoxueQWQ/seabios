@@ -1,37 +1,37 @@
-Developer Certificate of Origin
-Version 1.1
+开发商原产地证书
+1.1版
 
-Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
-1 Letterman Drive
-Suite D4700
-San Francisco, CA, 94129
+版权所有 (C) 2004、2006 Linux 基金会及其贡献者。
+莱特曼大道 1 号
+D4700套房
+旧金山, 加利福尼亚州, 94129
 
-Everyone is permitted to copy and distribute verbatim copies of this
-license document, but changing it is not allowed.
+任何人都可以复制和分发本文件的逐字副本
+许可文件，但不允许更改。
 
 
-Developer's Certificate of Origin 1.1
+开发商原产地证书1.1
 
-By making a contribution to this project, I certify that:
+通过对该项目做出贡献，我证明：
 
-(a) The contribution was created in whole or in part by me and I
-    have the right to submit it under the open source license
-    indicated in the file; or
+(a) 该贡献全部或部分由我和我创建
+     有权在开源许可下提交
+     文件中注明； 或者
 
-(b) The contribution is based upon previous work that, to the best
-    of my knowledge, is covered under an appropriate open source
-    license and I have the right under that license to submit that
-    work with modifications, whether created in whole or in part
-    by me, under the same open source license (unless I am
-    permitted to submit under a different license), as indicated
-    in the file; or
+(b) 该贡献是基于以前的工作，尽可能
+     据我所知，包含在适当的开源中
+     许可证，并且我有权根据该许可证提交
+     使用修改，无论是全部还是部分创建
+     由我，在相同的开源许可证下（除非我
+     允许根据不同的许可证提交），如所示
+     在文件中； 或者
 
-(c) The contribution was provided directly to me by some other
-    person who certified (a), (b) or (c) and I have not modified
-    it.
+(c) 该捐款是由其他一些人直接提供给我的
+     证明 (a)、(b) 或 (c) 的人且我未修改
+     它。
 
-(d) I understand and agree that this project and the contribution
-    are public and that a record of the contribution (including all
-    personal information I submit with it, including my sign-off) is
-    maintained indefinitely and may be redistributed consistent with
-    this project or the open source license(s) involved.
+(d) 我理解并同意该项目及其贡献
+     是公开的，并且贡献的记录（包括所有
+     我随其提交的个人信息，包括我的签名）是
+     无限期地维护，并且可以根据以下内容重新分发
+     该项目或涉及的开源许可证。

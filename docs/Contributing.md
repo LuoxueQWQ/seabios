@@ -1,25 +1,25 @@
-SeaBIOS welcomes contributions of code (either fixing bugs or adding
-new functionality). At a high level, the process to contribute a
-change is:
+SeaBIOS 欢迎贡献代码（修复错误或添加
+新功能）。 从高层次来看，该过程贡献
+变化是：
 
-1. [Obtain](Download) the current code and documentation
-2. Enhance and test the code locally
-3. Submit changes to the SeaBIOS [mailing list](Mailinglist) as a
-   patch
-4. Receive feedback, answer questions, and possibly provide updated
-   patches
-5. When accepted, a maintainer (Kevin O'Connor or Gerd Hoffman) will
-   commit the change to the master SeaBIOS repository
+1. [获取](下载)当前代码和文档
+2.本地增强和测试代码
+3. 将更改提交到 SeaBIOS [邮件列表](Mailinglist)
+    修补
+4. 接收反馈，回答问题，并可能提供更新的信息
+    补丁
+5. 被接受后，维护者（Kevin O'Connor 或 Gerd Hoffman）将
+    将更改提交到主 SeaBIOS 存储库
 
-The SeaBIOS patch submission process is similar to the
-[QEMU process](http://wiki.qemu.org/Contribute/SubmitAPatch). Please
-review the QEMU process for more details and tips on the best way to
-submit patches. The SeaBIOS C code does follow a slightly different
-coding style from QEMU (eg, mixed code and C99 style variable
-declarations are encouraged, braces are not required around single
-statement blocks), however patches in the QEMU style are acceptable.
+SeaBIOS 补丁提交过程类似于
+[QEMU 流程](http://wiki.qemu.org/Contribute/SubmitAPatch)。 请
+查看 QEMU 流程以获取有关最佳方法的更多详细信息和提示
+提交补丁。 SeaBIOS C 代码确实遵循略有不同的
+QEMU 的编码风格（例如，混合代码和 C99 风格变量
+鼓励声明，单个周围不需要大括号
+语句块），但是 QEMU 风格的补丁是可以接受的。
 
-As with QEMU, commits must contain a "Signed-off-by" line using your
-real name (sorry, no pseudonyms or anonymous contributions) and a
-current email address. It indicates agreement with the terms of the
-[developer certificate of origin](developer-certificate-of-origin).
+与 QEMU 一样，提交必须包含使用您的“Signed-off-by”行
+真实姓名（抱歉，没有化名或匿名贡献）和
+当前的电子邮件地址。 则表示同意本协议条款
+[开发商原产地证书](developer-certificate-of-origin)。

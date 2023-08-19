@@ -79,7 +79,7 @@ def main():
 
     # Print statistics
     runtimesize = end - symbols['code32init_end'].offset
-    print("Total size: %d  Fixed: %d  Free: %d (used %.1f%% of %dKiB rom)" % (
+    print("大小 %d  使用: %d  剩余: %d (使用 %.1f%% of %dKiB rom)" % (
         datasize, runtimesize, finalsize - datasize
         , (datasize / float(finalsize)) * 100.0
         , int(finalsize / 1024)))

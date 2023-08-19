@@ -1,178 +1,178 @@
-This page provides a high-level description of some of the major code
-phases that SeaBIOS transitions through and general information on
-overall code flow.
+此页面提供了一些主要代码的高级描述
+SeaBIOS 过渡的阶段和一般信息
+整体代码流程。
 
-SeaBIOS code phases
+SeaBIOS 代码阶段
 ===================
 
-The SeaBIOS code goes through a few distinct code phases during its
-execution lifecycle. Understanding these code phases can help when
-reading and enhancing the code.
+SeaBIOS 代码在其运行过程中经历了几个不同的代码阶段
+执行生命周期。 了解这些代码阶段可以在以下情况下有所帮助：
+阅读和增强代码。
 
-POST phase
+后阶段
 ----------
 
-The Power On Self Test (POST) phase is the initialization phase of the
-BIOS. This phase is entered when SeaBIOS first starts execution. The
-goal of the phase is to initialize internal state, initialize external
-interfaces, detect and setup hardware, and to then start the boot
-phase.
+开机自检 (POST) 阶段是系统的初始化阶段
+BIOS。 当 SeaBIOS 首次开始执行时进入此阶段。 这
+该阶段的目标是初始化内部状态，初始化外部状态
+接口，检测并设置硬件，然后开始启动
+阶段。
 
-On emulators, this phase starts when the CPU starts execution in 16bit
-mode at 0xFFFF0000:FFF0. The emulators map the SeaBIOS binary to this
-address, and SeaBIOS arranges for romlayout.S:reset_vector() to be
-present there. This code calls romlayout.S:entry_post() which then
-calls post.c:handle_post() in 32bit mode.
+在模拟器上，当 CPU 开始以 16 位执行时，此阶段开始
+模式位于 0xFFFF0000:FFF0。 模拟器将 SeaBIOS 二进制文件映射到此
+地址，SeaBIOS 将 romlayout.S:reset_vector() 安排为
+存在于那里。 此代码调用 romlayout.S:entry_post() ，然后
+在 32 位模式下调用 post.c:handle_post()。
 
-On coreboot, the build arranges for romlayout.S:entry_elf() to be
-called in 32bit mode. This then calls post.c:handle_post().
+在 coreboot 上，构建将 romlayout.S:entry_elf() 安排为
+以 32 位模式调用。 然后调用 post.c:handle_post()。
 
-On CSM, the build arranges for romlayout.S:entry_csm() to be called
-(in 16bit mode). This then calls csm.c:handle_csm() in 32bit mode.
-Unlike on the emulators and coreboot, the SeaBIOS CSM POST phase is
-orchestrated with UEFI and there are several calls back and forth
-between SeaBIOS and UEFI via handle_csm() throughout the POST
-process.
+在 CSM 上，构建安排调用 romlayout.S:entry_csm()
+（在 16 位模式下）。 然后以 32 位模式调用 csm.c:handle_csm()。
+与模拟器和 coreboot 不同，SeaBIOS CSM POST 阶段是
+使用 UEFI 协调，并且有多个来回调用
+在整个 POST 过程中通过 handle_csm() 在 SeaBIOS 和 UEFI 之间进行连接
+过程。
 
-The POST phase itself has several sub-phases.
+POST 阶段本身有几个子阶段。
 
-* The "preinit" sub-phase: code run prior to [code relocation](Linking overview#Code relocation).
-* The "init" sub-phase: code to initialize internal variables and
-  interfaces.
-* The "setup" sub-phase: code to setup hardware and drivers.
-* The "prepboot" sub-phase: code to finalize interfaces and prepare
-  for the boot phase.
+* “preinit”子阶段：在[代码重定位]（链接概述#代码重定位）之前运行代码。
+* “init”子阶段：初始化内部变量和
+   接口。
+*“设置”子阶段：设置硬件和驱动程序的代码。
+*“prepboot”子阶段：完成接口并准备的代码
+   对于启动阶段。
 
-At completion of the POST phase, SeaBIOS invokes an "int 0x19"
-software interrupt in 16bit mode which begins the boot phase.
+POST 阶段完成后，SeaBIOS 调用“int 0x19”
+16 位模式下的软件中断开始启动阶段。
 
-Boot phase
+启动阶段
 ----------
 
-The goal of the boot phase is to load the first portion of the
-operating system's boot loader into memory and start execution of that
-boot loader. This phase starts when a software interrupt ("int 0x19"
-or "int 0x18") is invoked. The code flow starts in 16bit mode in
-romlayout.S:entry_19() or romlayout.S:entry_18() which then
-transition to 32bit mode and call boot.c:handle_19() or
-boot.c:handle_18().
+启动阶段的目标是加载程序的第一部分
+操作系统的引导加载程序进入内存并开始执行
+引导加载程序。 当软件中断（“int 0x19”
+或“int 0x18”）被调用。 代码流程以 16 位模式开始
+romlayout.S:entry_19() 或 romlayout.S:entry_18() 然后
+转换到 32 位模式并调用 boot.c:handle_19() 或
+boot.c:handle_18()。
 
-The boot phase is technically also part of the "runtime" phase of
-SeaBIOS. It is typically invoked immediately after the POST phase,
-but it can also be invoked by an operating system or be invoked
-multiple times in an attempt to find a valid boot media. Although the
-boot phase C code runs in 32bit mode it does not have write access to
-the 0x0f0000-0x100000 memory region and can not call the various
-malloc_X() calls. See [Memory Model](Memory Model) for
-more information.
+从技术上讲，引导阶段也是“运行时”阶段的一部分
+SeaBIOS。 它通常在 POST 阶段之后立即调用，
+但它也可以由操作系统调用或被调用
+多次尝试找到有效的启动介质。 虽然
+启动阶段 C 代码在 32 位模式下运行，它没有写入权限
+0x0f0000-0x100000内存区域，无法调用各种
+malloc_X() 调用。 参见[内存模型]（内存模型）
+更多信息。
 
-Main runtime phase
+主要运行时阶段
 ------------------
 
-The main runtime phase occurs after the boot phase starts the
-operating system. Once in this phase, the SeaBIOS code may be invoked
-by the operating system using various 16bit and 32bit calls. The goal
-of this phase is to support these legacy calling interfaces and to
-provide compatibility with BIOS standards. There are multiple entry
-points for the BIOS - see the entry_XXX() assembler functions in
+主运行时阶段发生在引导阶段启动之后
+操作系统。 一旦进入此阶段，就可以调用 SeaBIOS 代码
+由操作系统使用各种 16 位和 32 位调用。 目标
+此阶段的重点是支持这些遗留调用接口并
+提供与 BIOS 标准的兼容性。 有多个入口
+BIOS 要点 - 请参阅中的entry_XXX() 汇编器函数
 romlayout.S.
 
-Callers use most of these legacy entry points by setting up a
-particular CPU register state, invoking the BIOS, and then inspecting
-the returned CPU register state. To handle this, SeaBIOS will backup
-the current register state into a "struct bregs" (see romlayout.S,
-entryfuncs.S, and bregs.h) on call entry and then pass this struct to
-the C code. The C code can then inspect the register state and modify
-it. The assembler entry functions will then restore the (possibly
-modified) register state from the "struct bregs" on return to the
-caller.
+调用者通过设置一个来使用大多数遗留入口点
+特定的CPU寄存器状态，调用BIOS，然后检查
+返回的CPU寄存器状态。 为了处理这个问题，SeaBIOS 将备份
+当前寄存器状态转换为“struct bregs”（参见 romlayout.S，
+Entryfuncs.S 和 bregs.h) 在调用入口处，然后将此结构传递给
+C 代码。 然后，C 代码可以检查寄存器状态并修改
+它。 然后汇编器入口函数将恢复（可能
+修改）从“struct bregs”返回到的寄存器状态
+呼叫者。
 
-Resume and reboot
+恢复并重新启动
 -----------------
 
-As noted above, on emulators SeaBIOS handles the 0xFFFF0000:FFF0
-machine startup execution vector. This vector is also called on
-machine faults and on some machine "resume" events. It can also be
-called (as 0xF0000:FFF0) by software as a request to reboot the
-machine (on emulators, coreboot, and CSM).
+如上所述，在模拟器上 SeaBIOS 处理 0xFFFF0000:FFF0
+机器启动执行向量。 这个向量也被称为
+机器故障和某些机器“恢复”事件。 也可以是
+由软件调用（如 0xF0000:FFF0）作为重新启动的请求
+机器（在模拟器、coreboot 和 CSM 上）。
 
-The SeaBIOS "resume and reboot" code handles these calls and attempts
-to determine the desired action of the caller. Code flow starts in
-16bit mode in romlayout.S:reset_vector() which calls
-romlayout.S:entry_post() which calls romlayout.S:entry_resume() which
-calls resume.c:handle_resume(). Depending on the request the
-handle_resume() code may transition to 32bit mode.
+SeaBIOS“恢复和重新启动”代码处理这些调用和尝试
+以确定调用者所需的操作。 代码流程开始于
+romlayout.S:reset_vector() 中的 16 位模式调用
+romlayout.S:entry_post() 调用 romlayout.S:entry_resume() ，其中
+调用resume.c:handle_resume()。 根据要求
+handle_resume() 代码可能会转换为 32 位模式。
 
-Technically this code is part of the "runtime" phase, so even though
-parts of it run in 32bit mode it still has the same limitations of the
-runtime phase.
+从技术上讲，这段代码是“运行时”阶段的一部分，所以即使
+它的一部分在 32 位模式下运行，但仍然具有与
+运行时阶段。
 
-Threads
+线程数
 =======
 
-Internally SeaBIOS implements a simple cooperative multi-tasking
-system. The system works by giving each "thread" its own stack, and
-the system round-robins between these stacks whenever a thread issues
-a yield() call. This "threading" system may be more appropriately
-described as [coroutines](http://en.wikipedia.org/wiki/Coroutine).
-These "threads" do not run on multiple CPUs and are not preempted, so
-atomic memory accesses and complex locking is not required.
+SeaBIOS内部实现了简单的协作多任务
+系统。 该系统的工作原理是为每个“线程”提供自己的堆栈，并且
+每当线程发出问题时，系统就会在这些堆栈之间循环
+一次yield()调用。 这个“线程”系统可能更合适
+描述为[协程](http://en.wikipedia.org/wiki/Coroutine)。
+这些“线程”不会在多个CPU上运行并且不会被抢占，因此
+不需要原子内存访问和复杂的锁定。
 
-The goal of these threads is to reduce overall boot time by
-parallelizing hardware delays. (For example, by allowing the wait for
-an ATA hard drive to spin-up and respond to commands to occur in
-parallel with the wait for a PS/2 keyboard to respond to a setup
-command.) These hardware setup threads are only available during the
-"setup" sub-phase of the [POST phase](#POST_phase).
+这些线程的目标是将总体启动时间减少
+并行化硬件延迟。 （例如，通过允许等待
+一个 ATA 硬盘驱动器旋转并响应命令
+与等待 PS/2 键盘响应设置并行
+命令。）这些硬件设置线程仅在
+[POST 阶段](#POST_phase) 的“设置”子阶段。
 
-The code that implements threads is in stacks.c.
+实现线程的代码在stacks.c中。
 
-Hardware interrupts
+硬件中断
 ===================
 
-The SeaBIOS C code always runs with hardware interrupts disabled. All
-of the C code entry points (see romlayout.S) are careful to explicitly
-disable hardware interrupts (via "cli"). Because running with
-interrupts disabled increases interrupt latency, any C code that could
-loop for a significant amount of time (more than about 1 ms) should
-periodically call yield(). The yield() call will briefly enable
-hardware interrupts to occur, then disable interrupts, and then resume
-execution of the C code.
+SeaBIOS C 代码始终在禁用硬件中断的情况下运行。 全部
+C 代码入口点（参见 romlayout.S）要小心地显式地
+禁用硬件中断（通过“cli”）。 因为跑步与
+禁用中断会增加中断延迟，任何可能的 C 代码
+循环相当长的时间（超过约 1 毫秒）应该
+定期调用yield()。 Yield() 调用将短暂启用
+发生硬件中断，然后禁用中断，然后恢复
+C代码的执行。
 
-There are two main reasons why SeaBIOS always runs C code with
-interrupts disabled. The first reason is that external software may
-override the default SeaBIOS handlers that are called on a hardware
-interrupt event. Indeed, it is common for DOS based applications to do
-this. These legacy third party interrupt handlers may have
-undocumented expectations (such as stack location and stack size) and
-may attempt to call back into the various SeaBIOS software services.
-Greater compatibility and more reproducible results can be achieved by
-only permitting hardware interrupts at specific points (via yield()
-calls). The second reason is that much of SeaBIOS runs in 32bit mode.
-Attempting to handle interrupts in both 16bit mode and 32bit mode and
-switching between modes to delegate those interrupts is an unneeded
-complexity. Although disabling interrupts can increase interrupt
-latency, this only impacts legacy systems where the small increase in
-interrupt latency is unlikely to be noticeable.
+SeaBIOS 总是运行 C 代码有两个主要原因
+中断被禁用。 第一个原因是外部软件可能
+覆盖在硬件上调用的默认 SeaBIOS 处理程序
+中断事件。 事实上，基于 DOS 的应用程序这样做很常见
+这。 这些传统的第三方中断处理程序可能有
+未记录的期望（例如堆栈位置和堆栈大小）和
+可能会尝试回调各种 SeaBIOS 软件服务。
+可以通过以下方式实现更高的兼容性和更可重复的结果
+只允许在特定点发生硬件中断（通过yield()
+来电）。 第二个原因是 SeaBIOS 的大部分运行在 32 位模式下。
+尝试在 16 位模式和 32 位模式下处理中断
+不需要在模式之间切换来委托这些中断
+复杂。 虽然禁用中断可以增加中断
+延迟，这只会影响遗留系统，其中的小幅增加
+中断延迟不太可能被注意到。
 
-Extra 16bit stack
+额外的16位堆栈
 =================
 
-SeaBIOS implements 16bit real mode handlers for both hardware
-interrupts and software request "interrupts". In a traditional BIOS,
-these requests would use the caller's stack space. However, the
-minimum amount of space the caller must provide has not been
-standardized and very old DOS programs have been observed to allocate
-very small amounts of stack space (100 bytes or less).
+SeaBIOS 为两种硬件实现 16 位实模式处理程序
+中断和软件请求“中断”。 在传统的 BIOS 中，
+这些请求将使用调用者的堆栈空间。 但是，那
+调用者必须提供的最小空间尚未确定
+标准化和非常古老的 DOS 程序已被观察到分配
+非常少量的堆栈空间（100 字节或更少）。
 
-By default, SeaBIOS now switches to its own stack on most 16bit real
-mode entry points. This extra stack space is allocated in ["low
-memory"](Memory Model). It ensures SeaBIOS uses a minimal amount of a
-callers stack (typically no more than 16 bytes) for these legacy
-calls. (More recently defined BIOS interfaces such as those that
-support 16bit protected and 32bit protected mode calls standardize a
-minimum stack size with adequate space, and SeaBIOS generally will not
-use its extra stack in these cases.)
+默认情况下，SeaBIOS 现在在大多数 16 位实机上切换到自己的堆栈
+模式入口点。 这个额外的堆栈空间分配在[“low
+内存”]（内存模型）。它确保 SeaBIOS 使用最少量的内存
+这些遗留的调用者堆栈（通常不超过 16 个字节）
+来电。 （最近定义的 BIOS 接口，例如
+支持16位保护和32位保护模式调用标准化
+具有足够空间的最小堆栈大小，而 SeaBIOS 一般不会
+在这些情况下使用其额外的堆栈。）
 
-The code to implement this stack "hopping" is in romlayout.S and in
-stacks.c.
+实现此堆栈“跳跃”的代码位于 romlayout.S 和
+stacks.c。

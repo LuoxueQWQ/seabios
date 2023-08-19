@@ -142,8 +142,8 @@ def fitSections(sections, fillsections):
     # Report stats
     total = BUILD_BIOS_SIZE-firstfixed
     slack = total - totalused
-    print ("Fixed space: 0x%x-0x%x  total: %d  slack: %d"
-           "  Percent slack: %.1f%%" % (
+    print ("固定空间: 0x%x-0x%x  总: %d  宽松: %d"
+           "  可宽延百分比: %.1f%%" % (
             firstfixed, BUILD_BIOS_SIZE, total, slack,
             (float(slack) / total) * 100.0))
 
@@ -288,12 +288,12 @@ def doLayout(sections, config, genreloc):
     size32flat = sec32fseg_start - sec32flat_start
     size32init = sec32flat_start - sec32init_start
     sizelow = li.sec32low_end - li.sec32low_start
-    print("16bit size:           %d" % size16)
-    print("32bit segmented size: %d" % size32seg)
-    print("32bit flat size:      %d" % (size32flat + size32textfseg))
-    print("32bit flat init size: %d" % size32init)
-    print("Lowmem size:          %d" % sizelow)
-    print("f-segment var size:   %d" % size32fseg)
+    print("16bit 大小:           %d" % size16)
+    print("32bit segmented 大小: %d" % size32seg)
+    print("32bit flat 大小:      %d" % (size32flat + size32textfseg))
+    print("32bit flat init 大小: %d" % size32init)
+    print("Lowmem 大小:          %d" % sizelow)
+    print("f-segment var 大小:   %d" % size32fseg)
     return li
 
 

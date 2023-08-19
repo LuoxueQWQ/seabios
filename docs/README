@@ -1,5 +1,5 @@
-This directory contains SeaBIOS documentation as found on the SeaBIOS
-wiki.  All the files in this directory (with the exclusion of this
-README file) correspond to a page on the wiki.
+此目录包含 SeaBIOS 上的 SeaBIOS 文档
+维基百科。 此目录中的所有文件（不包括此目录）
+自述文件）对应于 wiki 上的页面。
 
-The documentation files use markdown syntax.
+文档文件使用 Markdown 语法。

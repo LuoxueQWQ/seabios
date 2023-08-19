@@ -1,25 +1,25 @@
-This page is intended for developers interested in understanding and
-enhancing SeaBIOS. Please also consider joining the [mailing
-list](Mailinglist).
+此页面面向有兴趣了解和了解的开发人员
+增强 SeaBIOS。 还请考虑加入[邮寄
+列表]（邮件列表）。
 
-The SeaBIOS code can be obtained via the [download](Download)
-page. For specific information on building SeaBIOS for coreboot,
-please see the [coreboot SeaBIOS](http://www.coreboot.org/SeaBIOS)
-page.
+SeaBIOS代码可以通过[下载](Download)获取
+页。 有关为 coreboot 构建 SeaBIOS 的具体信息，
+请参阅[coreboot SeaBIOS](http://www.coreboot.org/SeaBIOS)
+页。
 
-See details on [building SeaBIOS](Build overview).
+请参阅[构建 SeaBIOS]（构建概述）的详细信息。
 
-There is also information on the SeaBIOS [Memory Model](Memory Model).
-Along with information on SeaBIOS [Execution and code flow](Execution
-and code flow). A description of the process of linking the final
-SeaBIOS binary is available at [Linking overview](Linking overview).
+还有关于SeaBIOS [内存模型]（内存模型）的信息。
+以及有关 SeaBIOS 的信息 [执行和代码流程]（执行
+和代码流程）。 最终链接过程的描述
+SeaBIOS 二进制文件可在[链接概述]（链接概述）中找到。
 
-The list of available runtime configuration items is at
-[runtime config](Runtime_config).
+可用的运行时配置项列表位于
+[运行时配置](Runtime_config)。
 
-To debug SeaBIOS and report problems see SeaBIOS
-[debugging](Debugging). To contribute changes to SeaBIOS see
-[contributing](Contributing).
+要调试 SeaBIOS 并报告问题，请参阅 SeaBIOS
+[调试]（调试）。 要对 SeaBIOS 做出贡献，请参阅
+[贡献]（贡献）。
 
-Useful links to specifications is available at [Developer
-links](Developer links).
+有用的规范链接可在 [Developer
+链接]（开发者链接）。

@@ -1,104 +1,104 @@
-The SeaBIOS code can be built using standard GNU tools. A recent Linux
-distribution should be able to build SeaBIOS using the standard
-compiler tools.
+SeaBIOS 代码可以使用标准 GNU 工具构建。 最近的Linux
+发行版应该能够使用标准构建 SeaBIOS
+编译器工具。
 
-Building SeaBIOS
-================
+构建 SeaBIOS
+===============
 
-First, [obtain the code](Download). SeaBIOS can be compiled for
-several different build targets. It is also possible to configure
-additional compile time options - run **make menuconfig** to do this.
+首先，【获取代码】（下载）。 SeaBIOS 可以编译为
+几个不同的构建目标。 也可以这样配置
+其他编译时选项 - 运行 **make menuconfig** 来执行此操作。
 
-Build for QEMU (along with KVM, Xen, and Bochs)
------------------------------------------------
+为 QEMU 构建（以及 KVM、Xen 和 Bochs）
+-----------------------------------------------------------
 
-To build for QEMU (and similar), one should be able to run "make" in
-the main directory. The resulting file "out/bios.bin" contains the
-processed bios image.
+要构建 QEMU（和类似的），应该能够运行“make”
+主目录。 生成的文件“out/bios.bin”包含
+处理后的BIOS图像。
 
-One can use the resulting binary with QEMU by using QEMU's "-bios"
-option. For example:
+通过使用 QEMU 的“-bios”，可以将生成的二进制文件与 QEMU 一起使用
+选项。 例如：
 
 `qemu -bios out/bios.bin -fda myfdimage.img`
 
-One can also use the resulting binary with Bochs. For example:
+还可以将生成的二进制文件与 Bochs 一起使用。 例如：
 
 `bochs -q 'floppya: 1_44=myfdimage.img' 'romimage: file=out/bios.bin'`
 
-Build for coreboot
+为核心启动构建
 ------------------
 
-To build for coreboot please see the coreboot build instructions at:
+要构建 coreboot，请参阅 coreboot 构建说明：
 <http://www.coreboot.org/SeaBIOS>
 
-Build as a UEFI Compatibility Support Module (CSM)
+构建为 UEFI 兼容性支持模块 (CSM)
 --------------------------------------------------
 
-To build as a CSM, first run kconfig (make menuconfig) and enable
-CONFIG_CSM. Then build SeaBIOS (make) - the resulting binary will be
-in "out/Csm16.bin".
+要构建为 CSM，首先运行 kconfig (make menuconfig) 并启用
+CONFIG_CSM。 然后构建 SeaBIOS (make) - 生成的二进制文件将是
+在“out/Csm16.bin”中。
 
-This binary may be used with the OMVF/EDK-II UEFI firmware. It will
-provide "legacy" BIOS services for booting non-EFI operating systems
-and will also allow OVMF to display on otherwise unsupported video
-hardware by using the traditional VGA BIOS. (Windows 2008r2 is known
-to use INT 10h BIOS calls even when booted via EFI, and the presence
-of a CSM makes this work as expected too.)
+该二进制文件可与 OMVF/EDK-II UEFI 固件一起使用。 它会
+提供用于引导非 EFI 操作系统的“传统”BIOS 服务
+并且还允许 OVMF 在其他不支持的视频上显示
+使用传统的 VGA BIOS 来控制硬件。 （已知 Windows 2008r2
+即使通过 EFI 启动也可以使用 INT 10h BIOS 调用，并且存在
+CSM 的使用也使这项工作按预期进行。）
 
-Having built SeaBIOS with CONFIG_CSM, one should be able to drop the
-result (out/Csm16.bin) into an OVMF build tree at
-OvmfPkg/Csm/Csm16/Csm16.bin and then build OVMF with 'build -D
-CSM_ENABLE'. The SeaBIOS binary will be included as a discrete file
-within the 'Flash Volume' which is created, and there are tools which
-will extract it and allow it to be replaced.
+使用 CONFIG_CSM 构建 SeaBIOS 后，应该能够放弃
+结果 (out/Csm16.bin) 到 OVMF 构建树中
+OvmfPkg/Csm/Csm16/Csm16.bin，然后使用 'build -D 构建 OVMF
+CSM_ENABLE'。 SeaBIOS 二进制文件将作为独立文件包含在内
+在创建的“Flash Volume”内，有一些工具可以
+将提取它并允许将其替换。
 
-Distribution builds
+分布构建
 ===================
 
-If one is building a binary version of SeaBIOS as part of a package
-(such as an rpm) or for wide distribution, please provide the
-EXTRAVERSION field during the build. For example:
+如果正在构建 SeaBIOS 的二进制版本作为软件包的一部分
+（例如 rpm）或为了广泛分布，请提供
+构建期间的 EXTRAVERSION 字段。 例如：
 
 `make EXTRAVERSION="-${RPM_PACKAGE_RELEASE}"`
 
-The EXTRAVERSION field should provide the package version (if
-applicable) and the name of the distribution (if that's not already
-obvious from the package version). This string will be appended to the
-main SeaBIOS version. The above information helps SeaBIOS developers
-correlate defect reports to the source code and build environment.
+EXTRAVERSION 字段应提供包版本（如果
+适用）和发行版的名称（如果还没有）
+从软件包版本中可以明显看出）。 该字符串将被附加到
+主要 SeaBIOS 版本。 以上信息对 SeaBIOS 开发人员有帮助
+将缺陷报告与源代码和构建环境相关联。
 
-If one is building a binary in a build environment that does not have
-access to the git tool or does not have the full SeaBIOS git repo
-available, then please use an official SeaBIOS release tar file as
-source. If building from a snapshot (where there is no official
-SeaBIOS tar) then one should generate a snapshot tar file on a machine
-that does support git using the scripts/tarball.sh tool. For example:
+如果在没有的构建环境中构建二进制文件
+可以访问 git 工具或没有完整的 SeaBIOS git 存储库
+可用，那么请使用官方 SeaBIOS 发布 tar 文件作为
+来源。 如果从快照构建（没有官方的
+SeaBIOS tar) 那么应该在一台机器上生成一个快照 tar 文件
+它确实支持使用 script/tarball.sh 工具的 git。 例如：
 
-`scripts/tarball.sh`
+`脚本/tarball.sh`
 
-The tarball.sh script encodes version information in the resulting tar
-file which the build can extract and include in the final binary. The
-above EXTRAVERSION field should still be set when building from a tar.
+tarball.sh 脚本在生成的 tar 中对版本信息进行编码
+构建可以提取并包含在最终二进制文件中的文件。 这
+从 tar 构建时，仍应设置上述 EXTRAVERSION 字段。
 
-Overview of files in the repository
-===================================
+存储库中文件的概述
+=====================================
 
-The **src/** directory contains the main bios source code. The
-**src/hw/** directory contains source code specific to hardware
-drivers. The **src/fw/** directory contains source code for platform
-firmware initialization. The **src/std/** directory contains header
-files describing standard bios, firmware, and hardware interfaces.
+**src/** 目录包含主要的 BIOS 源代码。 这
+**src/hw/** 目录包含特定于硬件的源代码
+司机。 **src/fw/** 目录包含平台的源代码
+固件初始化。 **src/std/** 目录包含标头
+描述标准 BIOS、固件和硬件接口的文件。
 
-The **vgasrc/** directory contains code for [SeaVGABIOS](SeaVGABIOS).
+**vgasrc/** 目录包含 [SeaVGABIOS](SeaVGABIOS) 的代码。
 
-The **scripts/** directory contains helper utilities for manipulating
-and building the final roms.
+**scripts/** 目录包含用于操作的辅助实用程序
+并构建最终的ROM。
 
-The **out/** directory is created by the build process - it contains
-all intermediate and final files.
+**out/** 目录是由构建过程创建的 - 它包含
+所有中间和最终文件。
 
-When reading the C code be aware that code that runs in 16bit mode can
-not arbitrarily access non-stack memory - see [Memory Model](Memory
-Model) for more details. For information on the major C code functions
-and where code execution starts see [Execution and code
-flow](Execution and code flow).
+阅读 C 代码时请注意，在 16 位模式下运行的代码可以
+不能随意访问非堆栈内存——参见[内存模型](内存
+型号）了解更多详细信息。 有关主要 C 代码函数的信息
+代码执行开始的位置请参阅[执行和代码
+flow]（执行和代码流程）。
